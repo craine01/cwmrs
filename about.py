@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About – Community Waste Management & Reporting System</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --dark-green:#3d4f2e;
+  --mid-green:#5a7a40;
+  --light-green:#8ab55a;
+  --pale-green:#b5d68a;
+  --cream:#e8e4cf;
+  --cream-dark:#d9d4b8;
+  --white-glass:rgba(255,255,255,0.78);
+  --card-bg:rgba(255,255,255,0.62);
+  --text-dark:#2c3a1e;
+  --text-mid:#4a5e35;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Poppins',sans-serif;background:var(--cream);color:var(--text-dark);overflow-x:hidden;}
+
+/* ── NAV ── */
+nav{
+  background:var(--dark-green);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 6%;height:64px;
+  position:sticky;top:0;z-index:1000;
+}
+.logo img{height:44px;display:block;}
+.nav-links{display:flex;list-style:none;gap:22px;align-items:center;}
+.nav-links a{
+  text-decoration:none;color:var(--pale-green);
+  font-weight:600;font-size:.78rem;letter-spacing:.04em;transition:color .2s;
+}
+.nav-links a:hover,.nav-links a.active{color:#fff;}
+.nav-links .report-btn{
+  background:var(--light-green);color:var(--dark-green)!important;
+  padding:7px 18px;border-radius:6px;font-weight:700;
+}
+.nav-links .report-btn:hover{background:var(--pale-green);}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;}
+.hamburger span{display:block;width:24px;height:2.5px;background:#fff;border-radius:2px;transition:.3s;}
+.hamburger.open span:nth-child(1){transform:translateY(7.5px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:translateY(-7.5px) rotate(-45deg);}
+
+/* ── HERO BANNER ── */
+.about-hero{
+  display:grid;grid-template-columns:1fr 1fr;
+  min-height:340px;
+}
+.about-hero-text{
+  padding:70px 8% 60px;
+  display:flex;flex-direction:column;justify-content:center;
+}
+.about-hero-text h1{font-size:clamp(2rem,4vw,3rem);font-weight:800;margin-bottom:20px;}
+.about-hero-text p{font-size:.9rem;color:var(--text-mid);line-height:1.8;max-width:480px;}
+.about-hero-img{
+  background:var(--dark-green);
+  clip-path:polygon(12% 0,100% 0,100% 100%,0 100%);
+}
+
+/* ── SECTION COMMONS ── */
+.section{padding:80px 8%;}
+.section-title{font-size:clamp(1.6rem,3vw,2.4rem);font-weight:800;text-align:center;margin-bottom:10px;}
+.section-sub{font-size:.88rem;color:var(--text-mid);text-align:center;margin-bottom:50px;max-width:560px;margin-left:auto;margin-right:auto;line-height:1.7;}
+
+/* ── CORE VALUES ── */
+.values-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:24px;
+}
+.value-card{
+  background:var(--dark-green);
+  border-radius:20px;padding:36px 24px;
+  text-align:center;color:#fff;
+  opacity:0;transform:translateY(28px);
+  transition:opacity .6s,transform .6s,box-shadow .3s;
+  box-shadow:0 8px 32px rgba(40,60,20,.12);
+}
+.value-card:hover{box-shadow:0 16px 44px rgba(40,60,20,.22);transform:translateY(-4px)!important;}
+.value-card.visible{opacity:1;transform:translateY(0);}
+.value-icon{
+  width:60px;height:60px;border-radius:50%;
+  background:rgba(255,255,255,.13);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 18px;font-size:1.5rem;color:var(--pale-green);
+}
+.value-card h3{font-size:1rem;font-weight:700;margin-bottom:12px;color:var(--pale-green);}
+.value-card p{font-size:.8rem;line-height:1.7;color:rgba(255,255,255,.8);}
+
+/* ── PARTNERSHIPS ── */
+.partnerships{background:var(--dark-green);padding:80px 8%;}
+.partnerships .section-title{color:#fff;}
+.partnerships .section-sub{color:rgba(255,255,255,.65);}
+
+.partners-sub-title{
+  font-size:.88rem;font-weight:600;
+  color:rgba(255,255,255,.75);
+  text-align:center;letter-spacing:.04em;
+  text-transform:uppercase;margin-bottom:28px;
+}
+.partners-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:20px;margin-bottom:54px;
+}
+.partner-card{
+  background:var(--cream);
+  border-radius:16px;padding:32px 20px;
+  text-align:center;
+  opacity:0;transform:translateY(20px);
+  transition:opacity .5s,transform .5s;
+}
+.partner-card.visible{opacity:1;transform:translateY(0);}
+.partner-logo{
+  width:56px;height:56px;border-radius:12px;
+  background:var(--mid-green);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 14px;font-size:1.4rem;color:#fff;
+}
+.partner-card h4{font-size:.88rem;font-weight:700;color:var(--mid-green);line-height:1.35;}
+
+.awards-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:20px;
+}
+.award-card{
+  background:var(--cream);
+  border-radius:16px;padding:28px 20px;
+  text-align:center;
+  opacity:0;transform:translateY(20px);
+  transition:opacity .5s,transform .5s;
+}
+.award-card.visible{opacity:1;transform:translateY(0);}
+.award-trophy{
+  width:52px;height:52px;border-radius:50%;
+  background:var(--light-green);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 14px;font-size:1.2rem;color:#fff;
+}
+.award-card h4{font-size:.82rem;font-weight:700;color:var(--mid-green);line-height:1.4;}
+.award-card p{font-size:.72rem;color:var(--text-mid);margin-top:6px;}
+
+/* ── DEVELOPER ── */
+.developer{background:var(--dark-green);padding:80px 8%;}
+.developer .section-title{color:#fff;}
+.dev-card{
+  display:flex;align-items:flex-start;gap:40px;
+  max-width:860px;margin:48px auto 0;
+}
+.dev-photo{
+  width:180px;height:180px;border-radius:50%;
+  flex-shrink:0;
+  overflow:hidden;
+  border:4px solid var(--light-green);
+  background:var(--cream);
+}
+.dev-photo img{width:100%;height:100%;object-fit:cover;object-position:center top;}
+.dev-info h2{
+  font-size:1.5rem;font-weight:800;
+  color:#fff;letter-spacing:.04em;
+  text-transform:uppercase;margin-bottom:16px;
+}
+.dev-info p{
+  font-size:.86rem;color:rgba(255,255,255,.78);
+  line-height:1.8;margin-bottom:10px;
+}
+
+/* ── IMPACT COUNTER (PyScript) ── */
+.impact-bar{
+  background:rgba(255,255,255,.08);
+  border-radius:12px;padding:18px 22px;margin-top:20px;
+  display:flex;align-items:center;gap:16px;
+}
+.impact-num{font-size:1.8rem;font-weight:800;color:var(--pale-green);}
+.impact-label{font-size:.8rem;color:rgba(255,255,255,.65);line-height:1.4;}
+
+/* ── JOIN JOURNEY ── */
+.join{padding:90px 8%;text-align:center;}
+.join h2{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:800;margin-bottom:16px;}
+.join p{font-size:1rem;color:var(--text-mid);max-width:520px;margin:0 auto 36px;line-height:1.8;}
+.join-btn{
+  display:inline-block;padding:14px 42px;
+  border-radius:50px;background:var(--dark-green);
+  color:#fff;text-decoration:none;
+  font-weight:700;font-size:.88rem;letter-spacing:.04em;
+  transition:.25s;
+}
+.join-btn:hover{background:var(--mid-green);}
+
+/* ── FOOTER ── */
+footer{background:var(--dark-green);color:#fff;padding:60px 8% 24px;}
+.footer-grid{
+  display:grid;grid-template-columns:2fr 1fr 1fr 1.6fr;
+  gap:40px;padding-bottom:40px;
+  border-bottom:1px solid rgba(255,255,255,.1);
+}
+.footer-logo-img{height:52px;margin-bottom:14px;display:block;}
+.footer-tagline{font-size:.8rem;opacity:.65;line-height:1.65;margin-bottom:18px;}
+.social-row{display:flex;gap:14px;}
+.social-row a{display:block;}
+.social-row img{width:26px;height:26px;filter:brightness(0) invert(1);opacity:.75;transition:.2s;}
+.social-row img:hover{opacity:1;}
+.footer-col h4{
+  font-size:.82rem;font-weight:700;color:var(--pale-green);
+  letter-spacing:.06em;text-transform:uppercase;margin-bottom:16px;
+}
+.footer-col p,.footer-col a{
+  font-size:.84rem;color:rgba(255,255,255,.7);text-decoration:none;
+  display:flex;align-items:center;gap:10px;margin-bottom:10px;transition:.2s;
+}
+.footer-col a:hover{color:#fff;}
+.footer-col img{width:18px;filter:brightness(0) invert(1);opacity:.7;}
+.footer-bottom{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-top:18px;flex-wrap:wrap;gap:8px;
+}
+.footer-copy{font-size:.72rem;opacity:.4;}
+.footer-legal{display:flex;gap:20px;}
+.footer-legal a{font-size:.72rem;opacity:.4;color:#fff;text-decoration:none;}
+.footer-legal a:hover{opacity:.8;}
+
+/* ── FADE UP ── */
+.fade-up{opacity:0;transform:translateY(28px);transition:opacity .6s,transform .6s;}
+.fade-up.visible{opacity:1;transform:translateY(0);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .about-hero{grid-template-columns:1fr;}
+  .about-hero-img{display:none;}
+  .partners-grid,.awards-grid{grid-template-columns:1fr 1fr;}
+  .footer-grid{grid-template-columns:1fr 1fr;}
+  .dev-card{flex-direction:column;align-items:center;text-align:center;}
+}
+@media(max-width:768px){
+  .nav-links{
+    display:none;flex-direction:column;
+    position:absolute;top:64px;left:0;right:0;
+    background:var(--dark-green);padding:16px 6%;gap:4px;
+    border-top:1px solid rgba(255,255,255,.1);
+  }
+  .nav-links.open{display:flex;}
+  .nav-links li{width:100%;}
+  .nav-links a{padding:10px 0;display:block;border-bottom:1px solid rgba(255,255,255,.06);}
+  .nav-links .report-btn{margin-top:8px;text-align:center;border-radius:8px;}
+  .hamburger{display:flex;}
+  .partners-grid,.awards-grid{grid-template-columns:1fr;}
+  .footer-grid{grid-template-columns:1fr;}
+  .about-hero-text{padding:50px 6% 40px;}
+}
+@media(max-width:480px){
+  .section{padding:60px 5%;}
+  .partnerships{padding:60px 5%;}
+  .developer{padding:60px 5%;}
+  nav{padding:0 5%;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">
+    <img src="https://i.imgur.com/h9fxKYo.png" alt="Logo">
+  </div>
+  <div class="hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="index.html">HOME</a></li>
+    <li><a href="about.html" class="active">ABOUT</a></li>
+    <li><a href="index.html#waste">WASTE</a></li>
+    <li><a href="index.html#community">COMMUNITY</a></li>
+    <li><a href="index.html#contact">CONTACT</a></li>
+    <li><a href="index.html#report" class="report-btn">REPORT</a></li>
+  </ul>
+</nav>
+
+<!-- HERO SPLIT -->
+<div class="about-hero">
+  <div class="about-hero-text">
+    <h1 class="fade-up">Our Mission</h1>
+    <p class="fade-up" style="transition-delay:.1s">
+      The Community Waste Management and Reporting System is dedicated to empowering every resident to take an active role in maintaining our local environment. By reporting issues in real-time, you help us identify problem areas and coordinate cleanup efforts more efficiently than ever before. Together, we can transform our streets into a sustainable space we are all proud to call home.
+    </p>
+  </div>
+  <div class="about-hero-img"></div>
+</div>
+
+<!-- CORE VALUES -->
+<section class="section">
+  <h2 class="section-title fade-up">Our Core Values</h2>
+  <p class="section-sub fade-up" style="transition-delay:.08s">To build a community that truly cares for its environment, we are guided by these four pillars:</p>
+  <div class="values-grid">
+    <div class="value-card">
+      <div class="value-icon"><i class="fas fa-shield-halved"></i></div>
+      <h3>Accountability</h3>
+      <p>Taking responsibility for our waste and our impact on the community. We hold ourselves and our local institutions to the highest standards, ensuring that every reported issue is acknowledged and addressed with transparency.</p>
+    </div>
+    <div class="value-card" style="transition-delay:.12s">
+      <div class="value-icon"><i class="fas fa-heart"></i></div>
+      <h3>Civic Solidarity</h3>
+      <p>Uniting as one neighborhood to solve shared environmental challenges. A cleaner neighborhood is a team effort. We foster a spirit of Bayanihan, encouraging residents to work together and support one another in maintaining the beauty and health of our common spaces.</p>
+    </div>
+    <div class="value-card" style="transition-delay:.24s">
+      <div class="value-icon"><i class="fas fa-globe-asia"></i></div>
+      <h3>Environmental Integrity</h3>
+      <p>Commitment to honest, sustainable, and transparent waste management practices. Our commitment goes beyond just picking up trash; we advocate for sustainable habits and honest reporting to protect our land and water for the next generation.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PARTNERSHIPS & RECOGNITION -->
+<section class="partnerships">
+  <h2 class="section-title fade-up">Partnerships &amp; Recognition</h2>
+  <p class="section-sub fade-up" style="transition-delay:.08s">Building a cleaner future through collaboration and earned trust from our community.</p>
+
+  <p class="partners-sub-title fade-up" style="transition-delay:.12s">Our Partners</p>
+  <div class="partners-grid">
+    <div class="partner-card">
+      <div class="partner-logo"><i class="fas fa-seedling"></i></div>
+      <h4>EcoShift Solutions</h4>
+    </div>
+    <div class="partner-card" style="transition-delay:.1s">
+      <div class="partner-logo"><i class="fas fa-leaf"></i></div>
+      <h4>Batangas Green Dynamics</h4>
+    </div>
+    <div class="partner-card" style="transition-delay:.2s">
+      <div class="partner-logo"><i class="fas fa-recycle"></i></div>
+      <h4>TerraPure Collective</h4>
+    </div>
+  </div>
+
+  <p class="partners-sub-title fade-up">Awards &amp; Recognition</p>
+  <div class="awards-grid">
+    <div class="award-card">
+      <div class="award-trophy"><i class="fas fa-trophy"></i></div>
+      <h4>2025 Excellence in Urban Sustainability</h4>
+      <p>Awarded by the National Urban Green Council</p>
+    </div>
+    <div class="award-card" style="transition-delay:.1s">
+      <div class="award-trophy"><i class="fas fa-award"></i></div>
+      <h4>Green Innovation Award for Civic Technology</h4>
+      <p>Batangas Regional Environmental Summit 2025</p>
+    </div>
+    <div class="award-card" style="transition-delay:.2s">
+      <div class="award-trophy"><i class="fas fa-star"></i></div>
+      <h4>Batangas Environmental Leadership Citation</h4>
+      <p>Provincial Government of Batangas, 2026</p>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT DEVELOPER -->
+<section class="developer">
+  <h2 class="section-title fade-up">About The Developer</h2>
+  <div class="dev-card fade-up" style="transition-delay:.1s">
+    <div class="dev-photo">
+      <img src="https://i.imgur.com/PHOl1lq.jpg" alt="Ken Traven Alrayas">
+    </div>
+    <div class="dev-info">
+      <h2>Ken Traven Alrayas</h2>
+      <p>Computer Science student and a recent university graduate with an academic background in Data Structures and Algorithms. A creative professional, working as a virtual assistant, graphic designer, and digital artist with 3–4 years of experience.</p>
+      <p>Driven by the spirit of civic responsibility, this system was built to empower communities with the tools needed to foster accountability and maintain a cleaner, more sustainable environment.</p>
+      <div class="impact-bar">
+        <span class="impact-num" id="days-counter">0</span>
+        <div class="impact-label">Days Active<br><span style="font-size:.72rem;opacity:.7">System has been serving the community</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JOIN JOURNEY -->
+<section class="join section">
+  <h2 class="section-title fade-up">Join Our Journey</h2>
+  <p class="fade-up" style="transition-delay:.08s">Stay connected with us. Every report counts. Every action matters.</p>
+  <a href="index.html#community" class="join-btn fade-up" style="transition-delay:.16s">GET INVOLVED &rarr;</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <img src="https://i.imgur.com/h9fxKYo.png" alt="Logo" class="footer-logo-img">
+      <p class="footer-tagline">Community Waste Management &amp; Reporting System<br><br>Cleaning our community through transparency, awareness, and united action.</p>
+      <div class="social-row">
+        <a href="#"><img src="https://i.imgur.com/jDxVF6i.png" alt="Instagram"></a>
+        <a href="#"><img src="https://i.imgur.com/KzCfWHk.png" alt="Facebook"></a>
+        <a href="#"><img src="https://i.imgur.com/xsraSaI.png" alt="X / Twitter"></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <a href="index.html">HOME</a>
+      <a href="index.html#waste">WASTE</a>
+      <a href="index.html#community">COMMUNITY</a>
+    </div>
+    <div class="footer-col">
+      <h4>Location</h4>
+      <p>Barangay T. Bliss,<br>Cuenca Batangas</p>
+    </div>
+    <div class="footer-col">
+      <h4>Get in Touch</h4>
+      <a href="mailto:kenteuyeu25@gmail.com">
+        <img src="https://i.imgur.com/6YEUGwy.png" alt="Email"> kenteuyeu25@gmail.com
+      </a>
+      <a href="tel:09386423388">
+        <img src="https://i.imgur.com/VXfQoIg.png" alt="Phone"> 09386423388
+      </a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">&copy; 2026 ALL RIGHTS RESERVED</p>
+    <div class="footer-legal">
+      <a href="#">PRIVACY POLICY</a>
+      <a href="#">TERMS OF SERVICE</a>
+      <a href="#">WASTE REPORT</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ── HAMBURGER ── */
+const hamburger = document.getElementById('hamburger');
+const navLinks  = document.getElementById('nav-links');
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('open');
+  navLinks.classList.toggle('open');
+});
+navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  hamburger.classList.remove('open');
+  navLinks.classList.remove('open');
+}));
+
+/* ── SCROLL REVEAL ── */
+const revealEls = document.querySelectorAll('.fade-up, .value-card, .partner-card, .award-card, .tracker-step');
+const revealObs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, {threshold: 0.13, rootMargin:'0px 0px -30px 0px'});
+revealEls.forEach(el => revealObs.observe(el));
+
+/* ── DAYS ACTIVE COUNTER ── */
+function runDaysCounter() {
+  const launchDate = new Date('2025-01-01');
+  const today = new Date();
+  const diffDays = Math.floor((today - launchDate) / (1000 * 60 * 60 * 24));
+  const el = document.getElementById('days-counter');
+  const duration = 1800;
+  const start = performance.now();
+  function easeOut(t){ return 1 - Math.pow(1 - t, 3); }
+  function step(now) {
+    const t = Math.min((now - start) / duration, 1);
+    el.textContent = Math.round(easeOut(t) * diffDays).toLocaleString();
+    if(t < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+const devSection = document.querySelector('.developer');
+let devCounted = false;
+const devObs = new IntersectionObserver(entries => {
+  if(entries[0].isIntersecting && !devCounted){
+    devCounted = true;
+    runDaysCounter();
+  }
+}, {threshold: 0.3});
+devObs.observe(devSection);
+</script>
+</body>
+</html>

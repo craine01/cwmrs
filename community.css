@@ -1,0 +1,958 @@
+< !DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Community – Community Waste Management & Reporting System</title><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"><link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css"><script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script><style>:root {
+    --dark-green: #4b5d3b;
+    --mid-green: #5a7a40;
+    --light-green: #a4d07d;
+    --pale-green: #b5d68a;
+    --cream: #e9e5d3;
+    --cream-dark: #d9d4b8;
+    --white-glass: rgba(255, 255, 255, 0.78);
+    --text-dark: #2c3a1e;
+    --text-mid: #4a5e35;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    overflow-x: hidden;
+}
+
+/* ══ NAV ══ */
+nav {
+    background: var(--dark-green);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 6%;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 2000;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo img {
+    height: 44px;
+    display: block;
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+}
+
+.logo-text strong {
+    color: #fff;
+    font-size: .7rem;
+    font-weight: 700;
+}
+
+.logo-text span {
+    color: var(--pale-green);
+    font-size: .6rem;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 22px;
+    align-items: center;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--pale-green);
+    font-weight: 600;
+    font-size: .78rem;
+    letter-spacing: .04em;
+    transition: color .2s;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: #fff;
+}
+
+.nav-links .report-btn {
+    background: var(--light-green);
+    color: var(--dark-green) !important;
+    padding: 7px 18px;
+    border-radius: 6px;
+    font-weight: 700;
+}
+
+.nav-links .report-btn:hover {
+    background: var(--pale-green);
+}
+
+.hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.hamburger span {
+    display: block;
+    width: 24px;
+    height: 2.5px;
+    background: #fff;
+    border-radius: 2px;
+    transition: .3s;
+}
+
+.hamburger.open span:nth-child(1) {
+    transform: translateY(7.5px) rotate(45deg);
+}
+
+.hamburger.open span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.open span:nth-child(3) {
+    transform: translateY(-7.5px) rotate(-45deg);
+}
+
+/* ══ GREETING BANNER (PyScript) ══ */
+#greeting-bar {
+    background: var(--dark-green);
+    color: var(--pale-green);
+    text-align: center;
+    font-size: .82rem;
+    font-weight: 500;
+    padding: 9px 16px;
+    letter-spacing: .02em;
+    min-height: 36px;
+}
+
+/* ══ HERO ══ */
+.page-hero {
+    text-align: center;
+    padding: 64px 8% 48px;
+}
+
+.page-hero h1 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    color: var(--mid-green);
+    font-style: italic;
+    margin-bottom: 12px;
+}
+
+.page-hero p {
+    font-size: .92rem;
+    color: var(--text-mid);
+}
+
+/* ══ SECTION COMMONS ══ */
+.section {
+    padding: 64px 8%;
+}
+
+.section-title {
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-weight: 800;
+    text-align: center;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+    font-style: italic;
+}
+
+.section-sub {
+    font-size: .86rem;
+    color: var(--text-mid);
+    text-align: center;
+    margin-bottom: 44px;
+}
+
+/* ══ FADE UP ══ */
+.fade-up {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity .6s ease, transform .6s ease;
+}
+
+.fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.slide-left {
+    opacity: 0;
+    transform: translateX(-30px);
+    transition: opacity .6s ease, transform .6s ease;
+}
+
+.slide-left.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.slide-right {
+    opacity: 0;
+    transform: translateX(30px);
+    transition: opacity .6s ease, transform .6s ease;
+}
+
+.slide-right.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* ══ STATEMENTS OF RESIDENTS ══ */
+.statements-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.quote-card {
+    background: var(--dark-green);
+    border-radius: 28px;
+    padding: 36px 32px;
+    color: #fff;
+    font-size: .92rem;
+    line-height: 1.75;
+    position: relative;
+}
+
+.quote-card::before {
+    content: '\201C';
+    position: absolute;
+    top: 12px;
+    left: 20px;
+    font-size: 4rem;
+    color: rgba(255, 255, 255, .12);
+    font-family: Georgia, serif;
+    line-height: 1;
+}
+
+.quote-card .author {
+    margin-top: 18px;
+    font-size: .8rem;
+    font-weight: 600;
+    color: var(--pale-green);
+}
+
+/* ══ PARTNER & COLLAB ══ */
+.partner-section {
+    padding: 64px 8%;
+}
+
+.partner-box {
+    background: var(--dark-green);
+    border-radius: 28px;
+    padding: 48px 48px 52px;
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+.partner-box h2 {
+    text-align: center;
+    color: #fff;
+    font-size: clamp(1.3rem, 2.5vw, 1.9rem);
+    font-weight: 800;
+    margin-bottom: 40px;
+}
+
+.partner-cols {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+}
+
+.partner-col h4 {
+    font-size: .88rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+}
+
+.partner-col p {
+    font-size: .8rem;
+    color: rgba(255, 255, 255, .75);
+    line-height: 1.7;
+}
+
+/* ══ COMMUNITY GUIDELINES ══ */
+.guidelines-section {
+    padding: 64px 8%;
+}
+
+.guidelines-box {
+    background: var(--dark-green);
+    border-radius: 28px;
+    padding: 48px 48px 52px;
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+.guidelines-box h2 {
+    text-align: center;
+    color: #fff;
+    font-size: clamp(1.3rem, 2.5vw, 1.9rem);
+    font-weight: 800;
+    margin-bottom: 36px;
+}
+
+.guidelines-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px 32px;
+}
+
+.guideline-item {
+    border-left: 3px solid var(--light-green);
+    padding-left: 14px;
+}
+
+.guideline-item h4 {
+    font-size: .84rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+}
+
+.guideline-item p {
+    font-size: .78rem;
+    color: rgba(255, 255, 255, .75);
+    line-height: 1.65;
+}
+
+/* ══ LATEST COMMUNITY ACTION ══ */
+.action-section {
+    background: var(--dark-green);
+    padding: 64px 8%;
+}
+
+.action-section h2 {
+    text-align: center;
+    color: #fff;
+    font-size: clamp(1.3rem, 2.5vw, 1.9rem);
+    font-weight: 800;
+    margin-bottom: 44px;
+    font-style: italic;
+}
+
+.action-card {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+    max-width: 860px;
+    margin: 0 auto;
+}
+
+.action-photo-wrap {
+    flex-shrink: 0;
+    text-align: center;
+}
+
+.action-photo {
+    width: 180px;
+    height: 210px;
+    border-radius: 20px;
+    background: var(--cream);
+    overflow: hidden;
+    border: 3px solid rgba(255, 255, 255, .15);
+    margin-bottom: 10px;
+}
+
+.action-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.action-photo-name {
+    font-size: .8rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, .85);
+}
+
+.action-text {}
+
+.action-text h3 {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 16px;
+    line-height: 1.35;
+}
+
+.action-text p {
+    font-size: .84rem;
+    color: rgba(255, 255, 255, .8);
+    line-height: 1.8;
+    margin-bottom: 12px;
+}
+
+/* ══ COMMUNITY HIGHLIGHTS / GALLERY ══ */
+.gallery-section {
+    padding: 64px 8%;
+}
+
+.gallery-section .section-title {
+    font-style: italic;
+}
+
+.gallery-sub {
+    font-size: .82rem;
+    color: var(--text-mid);
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 16px;
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+.gallery-item {
+    border-radius: 20px;
+    overflow: hidden;
+    background: var(--cream-dark);
+    border: 3px solid rgba(75, 93, 59, .18);
+    aspect-ratio: 4/3;
+    opacity: 0;
+    transform: scale(.96);
+    transition: opacity .5s, transform .5s;
+}
+
+.gallery-item.visible {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform .4s;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.05);
+}
+
+/* layout: 2 left, 1 tall center, 2 right */
+.gallery-item.tall {
+    grid-row: span 2;
+    aspect-ratio: unset;
+}
+
+.gallery-item.tall img {
+    height: 100%;
+}
+
+.gallery-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 220px 220px;
+    gap: 16px;
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+.g1 {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.g2 {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.g3 {
+    grid-column: 2;
+    grid-row: 1/3;
+}
+
+.g4 {
+    grid-column: 3;
+    grid-row: 1;
+}
+
+.g5 {
+    grid-column: 3;
+    grid-row: 2;
+}
+
+/* ══ SHARE YOUR STORY ══ */
+.story-section {
+    padding: 80px 8% 90px;
+    text-align: center;
+}
+
+.story-section h2 {
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 800;
+    font-style: italic;
+    color: var(--text-dark);
+    margin-bottom: 12px;
+}
+
+.story-section p {
+    font-size: .92rem;
+    color: var(--text-mid);
+    margin-bottom: 32px;
+}
+
+.hashtag {
+    display: inline-block;
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--mid-green);
+    background: rgba(90, 122, 64, .1);
+    border-radius: 50px;
+    padding: 10px 36px;
+    letter-spacing: .04em;
+}
+
+/* ══ ENGAGEMENT METER ══ */
+.meter-section {
+    padding: 0 8% 64px;
+    display: flex;
+    justify-content: center;
+}
+
+.meter-card {
+    background: var(--dark-green);
+    border-radius: 24px;
+    padding: 32px 40px;
+    max-width: 600px;
+    width: 100%;
+    text-align: center;
+}
+
+.meter-card h3 {
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 18px;
+}
+
+.meter-bar-track {
+    height: 14px;
+    border-radius: 7px;
+    background: rgba(255, 255, 255, .12);
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.meter-bar-fill {
+    height: 100%;
+    border-radius: 7px;
+    background: linear-gradient(90deg, var(--mid-green), var(--light-green));
+    width: 0%;
+    transition: width 1.4s cubic-bezier(.34, 1, .64, 1);
+}
+
+.meter-label {
+    font-size: .78rem;
+    color: rgba(255, 255, 255, .65);
+}
+
+#engagement-score {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--pale-green);
+}
+
+#py-greeting {
+    font-size: .84rem;
+    color: rgba(255, 255, 255, .75);
+    margin-top: 8px;
+}
+
+/* ══ FOOTER ══ */
+footer {
+    background: var(--dark-green);
+    color: #fff;
+    padding: 60px 8% 0;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1.6fr;
+    gap: 40px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid rgba(255, 255, 255, .1);
+}
+
+.footer-brand {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.footer-brand img {
+    height: 48px;
+}
+
+.footer-brand-text strong {
+    font-size: .78rem;
+    display: block;
+    color: #fff;
+    line-height: 1.4;
+}
+
+.footer-brand-text span {
+    font-size: .68rem;
+    color: var(--pale-green);
+}
+
+.footer-tagline {
+    font-size: .78rem;
+    opacity: .6;
+    line-height: 1.7;
+    margin-bottom: 18px;
+}
+
+.social-row {
+    display: flex;
+    gap: 14px;
+}
+
+.social-row a img {
+    width: 26px;
+    height: 26px;
+    filter: brightness(0) invert(1);
+    opacity: .75;
+    transition: .2s;
+    display: block;
+}
+
+.social-row a img:hover {
+    opacity: 1;
+}
+
+.footer-col h4 {
+    font-size: .8rem;
+    font-weight: 700;
+    color: var(--pale-green);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+}
+
+.footer-col p,
+.footer-col a {
+    font-size: .82rem;
+    color: rgba(255, 255, 255, .7);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    transition: .2s;
+}
+
+.footer-col a:hover {
+    color: #fff;
+}
+
+.footer-col img {
+    width: 18px;
+    filter: brightness(0) invert(1);
+    opacity: .7;
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 0;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.footer-copy {
+    font-size: .72rem;
+    opacity: .4;
+}
+
+.footer-legal {
+    display: flex;
+    gap: 20px;
+}
+
+.footer-legal a {
+    font-size: .72rem;
+    opacity: .4;
+    color: #fff;
+    text-decoration: none;
+}
+
+.footer-legal a:hover {
+    opacity: .8;
+}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:900px) {
+
+    .partner-cols,
+    .guidelines-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .action-card {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .gallery-layout {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 200px 200px 200px;
+    }
+
+    .g1 {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .g2 {
+        grid-column: 1;
+        grid-row: 2;
+    }
+
+    .g3 {
+        grid-column: 2;
+        grid-row: 1/3;
+    }
+
+    .g4 {
+        grid-column: 1;
+        grid-row: 3;
+    }
+
+    .g5 {
+        grid-column: 2;
+        grid-row: 3;
+    }
+}
+
+@media(max-width:768px) {
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 64px;
+        left: 0;
+        right: 0;
+        background: var(--dark-green);
+        padding: 16px 6%;
+        gap: 4px;
+        border-top: 1px solid rgba(255, 255, 255, .1);
+    }
+
+    .nav-links.open {
+        display: flex;
+    }
+
+    .nav-links li {
+        width: 100%;
+    }
+
+    .nav-links a {
+        padding: 10px 0;
+        display: block;
+        border-bottom: 1px solid rgba(255, 255, 255, .06);
+    }
+
+    .nav-links .report-btn {
+        margin-top: 8px;
+        text-align: center;
+        border-radius: 8px;
+    }
+
+    .hamburger {
+        display: flex;
+    }
+
+    .statements-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .partner-cols,
+    .guidelines-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .partner-box,
+    .guidelines-box {
+        padding: 32px 24px;
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .gallery-layout {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 180px 180px 180px;
+    }
+}
+
+@media(max-width:480px) {
+
+    .section,
+    .partner-section,
+    .guidelines-section,
+    .gallery-section,
+    .story-section {
+        padding-left: 5%;
+        padding-right: 5%;
+    }
+
+    nav {
+        padding: 0 5%;
+    }
+
+    .gallery-layout {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+    }
+
+    .g1,
+    .g2,
+    .g3,
+    .g4,
+    .g5 {
+        grid-column: 1;
+        grid-row: auto;
+    }
+
+    .gallery-item {
+        aspect-ratio: 4/3;
+    }
+}
+
+</style></head><body>< !-- ══ GREETING BAR (Python output target) ══ --><div id="greeting-bar">Loading community greeting...</div>< !-- ══ NAV ══ --><nav><div class="logo"><img src="https://i.imgur.com/h9fxKYo.png" alt="Logo"><div class="logo-text"><strong>Community Waste<br>Management &<br>Reporting System</strong><span>For Greener Future</span></div></div><div class="hamburger" id="hamburger"><span></span><span></span><span></span></div><ul class="nav-links" id="nav-links"><li><a href="index.html">HOME</a></li><li><a href="about.html">ABOUT</a></li><li><a href="waste.html">WASTE</a></li><li><a href="community.html" class="active">COMMUNITY</a></li><li><a href="#contact">CONTACT</a></li><li><a href="#report" class="report-btn">REPORT</a></li></ul></nav>< !-- ══ HERO ══ --><div class="page-hero"><h1 class="fade-up">Our Community</h1><p class="fade-up" style="transition-delay:.08s">A safe and greener space for everyone to express their individuality.</p></div>< !-- ══ STATEMENTS OF RESIDENTS ══ --><section class="section" style="padding-top:0;"><h2 class="section-title fade-up">Statements of Residents</h2><div class="statements-grid" style="margin-top:32px;"><div class="quote-card slide-left"><p>"The transparency is incredible. Finally, a platform built with genuine care for our streets!" </p><div class="author">– Ash Laraya</div></div><div class="quote-card slide-right" style="transition-delay:.1s"><p>"I love how intuitive the reporting process is. You can really feel the dedication to making our community better." </p><div class="author">– Miguel Sanchez</div></div></div></section>< !-- ══ PARTNER & COLLAB ══ --><section class="partner-section"><div class="partner-box fade-up"><h2>Partner &amp;
+Collab With Us</h2><div class="partner-cols"><div class="partner-col"><h4>Eco-Conscious Design:</h4><p>Our system is built with a deep commitment to protecting the environment and fostering long-term sustainability.</p></div><div class="partner-col"><h4>100% Community-Driven:</h4><p>Every report and resolution is fueled by the genuine care of local residents.</p></div><div class="partner-col"><h4>Verified Accountability:</h4><p>We ensure every action is tracked and validated,
+so your contributions lead to real,
+visible change.</p></div></div></div></section>< !-- ══ COMMUNITY GUIDELINES ══ --><section class="guidelines-section"><div class="guidelines-box fade-up"><h2>Community Guidelines</h2><div class="guidelines-grid"><div class="guideline-item"><h4>Encourage Ownership:</h4><p>Take pride in your neighborhood.</p></div><div class="guideline-item"><h4>Work Together:</h4><p>Progress is a collective effort.</p></div><div class="guideline-item"><h4>No Negligence:</h4><p>Zero tolerance for illegal dumping or environmental harm.</p></div><div class="guideline-item"><h4>Protect the Future:</h4><p>Think long-term for the next generation.</p></div><div class="guideline-item"><h4>Be Accountable:</h4><p>Cleanliness is our core mood.</p></div><div class="guideline-item"><h4>Keep it Constructive:</h4><p>Focus on cleaning up,
+not just calling out.</p></div></div></div></section>< !-- ══ LATEST COMMUNITY ACTION ══ --><section class="action-section"><h2>Latest Community Action</h2><div class="action-card fade-up"><div class="action-photo-wrap"><div class="action-photo"><img src="https://i.imgur.com/eCOhj7I.png" alt="Ysabelle Dion Loria" onerror="this.style.display='none'"></div><div class="action-photo-name">Ysabelle Dion Loria</div></div><div class="action-text"><h3>Local Neighborhood Transformed: Citizen Report Leads to Rapid Cleanup</h3><p>For months,
+the corner of Rizal Street was hidden under a mountain of plastic and debris,
+but everything changed the moment I hit 'send' on the app. Within just two days of filing my report,
+the waste management team arrived to fully clear the street and restore the sidewalk.</p><p>Watching the status flip to 'Verified' on my dashboard felt like a victory for the whole block. It's more than just an app; it' s proof that when we speak up,
+our community actually listens and takes action.</p></div></div></section>< !-- ══ ENGAGEMENT METER (PyScript output) ══ --><section class="meter-section" style="padding-top:64px;"><div class="meter-card fade-up"><h3>Community Engagement Meter</h3><div style="margin-bottom:16px;"><span id="engagement-score">0</span><span style="font-size:.9rem;color:rgba(255,255,255,.5);">/ 100</span></div><div class="meter-bar-track"><div class="meter-bar-fill" id="meter-fill"></div></div><div class="meter-label" id="meter-label">Calculating community score...</div><p id="py-greeting" style="margin-top:14px;">Loading...</p></div></section>< !-- ══ COMMUNITY HIGHLIGHTS ══ --><section class="gallery-section"><h2 class="section-title fade-up">Community Highlights</h2><p class="gallery-sub fade-up" style="transition-delay:.06s">Gallery Collection:</p><div class="gallery-layout"><div class="gallery-item g1 fade-up" style="transition-delay:.08s"><img src="https://i.imgur.com/5InBr3v.png" alt="Community highlight 1" loading="lazy"></div><div class="gallery-item g2 fade-up" style="transition-delay:.16s"><img src="https://i.imgur.com/0xCg2fe.png" alt="Community highlight 2" loading="lazy"></div><div class="gallery-item g3 fade-up" style="transition-delay:.06s;border-radius:20px;overflow:hidden;"><img src="https://i.imgur.com/t2lTUFJ.png" alt="Community highlight center" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="gallery-item g4 fade-up" style="transition-delay:.1s"><img src="https://i.imgur.com/VirEExO.png" alt="Community highlight 4" loading="lazy"></div><div class="gallery-item g5 fade-up" style="transition-delay:.18s"><img src="https://i.imgur.com/eCOhj7I.png" alt="Community highlight 5" loading="lazy"></div></div></section>< !-- ══ SHARE YOUR STORY ══ --><section class="story-section"><h2 class="fade-up">Share Your Story</h2><p class="fade-up" style="transition-delay:.08s">Use #CWMRS on Instagram to be featured.</p><div class="hashtag fade-up" style="transition-delay:.16s">#CWMRS</div></section>< !-- ══ FOOTER ══ --><footer id="contact"><div class="footer-grid"><div><div class="footer-brand"><img src="https://i.imgur.com/h9fxKYo.png" alt="Logo"><div class="footer-brand-text"><strong>Community Waste<br>Management &<br>Reporting System</strong></div></div><p class="footer-tagline">Cleaning our community through transparency,
+awareness,
+and verified action. Every report is backed by legitimate data to ensure total accountability for a waste-free future.</p><div class="social-row"><a href="#"><img src="https://i.imgur.com/jDxVF6i.png" alt="Instagram"></a><a href="#"><img src="https://i.imgur.com/KzCfWHk.png" alt="Facebook"></a><a href="#"><img src="https://i.imgur.com/xsraSaI.png" alt="X"></a></div></div><div class="footer-col"><h4>Quick Links</h4><a href="index.html">HOME</a><a href="waste.html">WASTE</a><a href="community.html">COMMUNITY</a></div><div class="footer-col"><h4>Location</h4><p>Barangay 7,
+Bliss<br>Cuenca Batangas</p></div><div class="footer-col" id="contact"><h4>Get in Touch</h4><a href="mailto:kantreyes208@gmail.com"><img src="https://i.imgur.com/6YEUGwy.png" alt="Email">kantreyes208@gmail.com</a><a href="tel:09369433099"><img src="https://i.imgur.com/VXfQoIg.png" alt="Phone">09369433099</a></div></div><div class="footer-bottom"><p class="footer-copy">ALL RIGHT RESERVED 2026</p><div class="footer-legal"><a href="#">PRIVACY POLICY</a><a href="#">TERMS OF SERVICE</a><a href="#">WASTE REPORT</a></div></div></footer>< !-- ══ PYSCRIPT ══ --><script type="py">from pyscript import document from js import Date as JsDate # Get current date info js_date=JsDate.new() hour=int(js_date.getHours()) day_of_week=int(js_date.getDay()) # 0=Sun month=int(js_date.getMonth())+1 day=int(js_date.getDate()) year=int(js_date.getFullYear()) # Build greeting based on time if hour < 12: greeting_time="Good morning"
+elif hour < 17: greeting_time="Good afternoon"
+else: greeting_time="Good evening"
+
+day_names=["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"] month_names=["January", "February", "March", "April", "May", "June",
+"July", "August", "September", "October", "November", "December"] day_name=day_names[day_of_week] month_name=month_names[month - 1] date_str=f"{day_name}, {month_name} {day}, {year}"
+
+# Community engagement score — formula based on day & month (simulated) base=72 day_bonus=(day % 7) * 2 month_bonus=month * 1 engagement=min(base + day_bonus + month_bonus, 100) # Determine activity level if engagement>=90: level="Outstanding Community"
+elif engagement>=75: level="Highly Active Community"
+elif engagement>=60: level="Growing Community"
+else: level="Building Momentum"
+
+# Update greeting bar greeting_bar=document.getElementById("greeting-bar") greeting_bar.innerText=f"{greeting_time}, Community Member! Today is {date_str}. Join us in keeping Barangay 7 Bliss clean."
+
+# Update meter text py_greeting=document.getElementById("py-greeting") py_greeting.innerText=f"Status: {level} — {engagement}% engagement rate this month."
+
+# Store engagement value for JS to animate document.getElementById("engagement-score").setAttribute("data-score", str(engagement)) document.getElementById("meter-label").innerText=f"Community score calculated for {month_name} {year}"
+</script><script>
+/* ══ HAMBURGER ══ */
+const hamburger=document.getElementById('hamburger');
+const navLinks=document.getElementById('nav-links');
+
+hamburger.addEventListener('click', ()=> {
+        hamburger.classList.toggle('open');
+        navLinks.classList.toggle('open');
+    });
+
+navLinks.querySelectorAll('a').forEach(a=> a.addEventListener('click', ()=> {
+            hamburger.classList.remove('open');
+            navLinks.classList.remove('open');
+        }));
+
+/* ══ SCROLL REVEAL ══ */
+const revEls=document.querySelectorAll('.fade-up,.slide-left,.slide-right,.gallery-item');
+
+const revObs=new IntersectionObserver(entries=> {
+        entries.forEach(e=> {
+                if(e.isIntersecting) e.target.classList.add('visible');
+            });
+    }
+
+    , {
+    threshold: 0.1, rootMargin:'0px 0px -30px 0px'
+});
+revEls.forEach(el=> revObs.observe(el));
+
+/* ══ ENGAGEMENT METER ANIMATION (triggered after PyScript sets data-score) ══ */
+function animateMeter() {
+    const scoreEl=document.getElementById('engagement-score');
+    const fillEl=document.getElementById('meter-fill');
+    const target=parseInt(scoreEl.getAttribute('data-score') || '78');
+    if( !target) return;
+
+    const duration=1600;
+    const start=performance.now();
+
+    function ease(t) {
+        return 1 - Math.pow(1-t, 3);
+    }
+
+    function step(now) {
+        const t=Math.min((now - start) / duration, 1);
+        const val=Math.round(ease(t) * target);
+        scoreEl.textContent=val;
+        fillEl.style.width=val+'%';
+        if(t < 1) requestAnimationFrame(step);
+    }
+
+    requestAnimationFrame(step);
+}
+
+// Watch for meter card to appear in view
+const meterCard=document.querySelector('.meter-card');
+
+const meterObs=new IntersectionObserver(entries=> {
+        if(entries[0].isIntersecting) {
+            // Slight delay to let PyScript finish writing the score
+            setTimeout(animateMeter, 600);
+            meterObs.disconnect();
+        }
+    }
+
+    , {
+    threshold: 0.3
+});
+if(meterCard) meterObs.observe(meterCard);
+</script></body></html> 

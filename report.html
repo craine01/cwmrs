@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Report – Community Waste Management & Reporting System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root {
+      --dark-green: #4b5d3b;
+      --mid-green: #5a7a40;
+      --light-green: #a4d07d;
+      --pale-green: #b5d68a;
+      --cream: #e9e5d3;
+      --cream-dark: #d9d4b8;
+      --text-dark: #2c3a1e;
+      --text-mid: #4a5e35;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--cream);
+      color: var(--text-dark);
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* NAV */
+     nav {
+      background: var(--dark-green);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 6%;
+      height: 64px;
+      position: sticky;
+      top: 0;
+      z-index: 2000;
+      flex-shrink: 0;
+    }
+
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo img { height: 40px; display: block; }
+    .logo-text { display: flex; flex-direction: column; line-height: 1.2; }
+    .logo-text strong { color: #fff; font-size: .68rem; font-weight: 700; letter-spacing: .01em; }
+    .logo-text span { color: var(--pale-green); font-size: .58rem; }
+
+    .nav-links { display: flex; list-style: none; gap: 20px; align-items: center; }
+    .nav-links a {
+      text-decoration: none; color: var(--pale-green); font-weight: 700;
+      font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; transition: color .2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: #fff; }
+    .nav-links .report-btn {
+      background: var(--cream); color: var(--dark-green) !important;
+      padding: 7px 18px; border-radius: 6px; font-weight: 800; border: 2px solid var(--cream);
+    }
+    .nav-links .report-btn:hover { background: var(--pale-green); border-color: var(--pale-green); }
+
+    /* Logged-in user chip */
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 50px;
+      padding: 5px 14px 5px 8px;
+    }
+    .user-chip-avatar {
+      width: 28px; height: 28px;
+      background: var(--light-green);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .75rem; font-weight: 800; color: var(--dark-green);
+    }
+    .user-chip span { font-size: .72rem; font-weight: 600; color: #fff; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .logout-btn {
+      background: none; border: none; color: rgba(255,255,255,.5);
+      cursor: pointer; font-size: .75rem; margin-left: 4px; transition: color .2s;
+    }
+    .logout-btn:hover { color: #fff; }
+
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .hamburger span { display: block; width: 24px; height: 2.5px; background: #fff; border-radius: 2px; transition: .3s; }
+    .hamburger.open span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+      z-index: 2100;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2.5px;
+      background: #fff;
+      border-radius: 2px;
+      transition: .3s;
+    }
+
+    .hamburger.open span:nth-child(1) {
+      transform: translateY(7.5px) rotate(45deg);
+    }
+
+    .hamburger.open span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.open span:nth-child(3) {
+      transform: translateY(-7.5px) rotate(-45deg);
+    }
+
+    /* MAIN */
+    main {
+      flex: 1;
+      padding: 64px 8% 80px;
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 52px;
+    }
+
+    .page-header h1 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      font-style: italic;
+      color: var(--text-dark);
+      margin-bottom: 14px;
+    }
+
+    .page-header p {
+      font-size: .95rem;
+      color: var(--text-mid);
+      max-width: 520px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    .report-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      max-width: 1100px;
+      margin: 0 auto 64px;
+      align-items: start;
+    }
+
+    /* FORM CARD */
+    .form-card {
+      background: var(--dark-green);
+      border-radius: 28px;
+      padding: 44px 40px 40px;
+      box-shadow: 0 16px 48px rgba(40, 60, 20, .18);
+    }
+
+    .form-card h2 {
+      text-align: center;
+      color: #fff;
+      font-size: 1.5rem;
+      font-weight: 800;
+      font-style: italic;
+      margin-bottom: 28px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      background: rgba(255, 255, 255, .92);
+      border: none;
+      border-radius: 14px;
+      padding: 14px 18px;
+      font-family: 'Poppins', sans-serif;
+      font-size: .86rem;
+      color: var(--text-dark);
+      outline: none;
+      transition: box-shadow .2s, background .2s;
+      resize: none;
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: #8a9a7a;
+      font-size: .84rem;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(164, 208, 125, .5);
+    }
+
+    .form-group textarea {
+      min-height: 130px;
+    }
+
+    .char-hint {
+      font-size: .72rem;
+      color: rgba(255, 255, 255, .5);
+      text-align: right;
+      margin-top: 4px;
+    }
+
+    .submit-btn {
+      display: block;
+      width: 100%;
+      margin-top: 8px;
+      padding: 14px;
+      background: var(--cream);
+      color: var(--dark-green);
+      border: none;
+      border-radius: 14px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: .9rem;
+      letter-spacing: .04em;
+      cursor: pointer;
+      transition: background .25s, transform .2s, box-shadow .2s;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, .12);
+    }
+
+    .submit-btn:hover {
+      background: var(--pale-green);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .14);
+    }
+
+    .submit-btn:disabled {
+      opacity: .7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2.5px solid var(--dark-green);
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .msg-box {
+      display: none;
+      margin-top: 16px;
+      border-radius: 12px;
+      padding: 12px 18px;
+      text-align: center;
+      font-weight: 600;
+      font-size: .85rem;
+      animation: fadeUp .4s ease;
+    }
+
+    .msg-box.error {
+      background: rgba(255, 120, 80, .15);
+      border: 1.5px solid #e07060;
+      color: #f5b0a0;
+    }
+
+    .ref-id-box {
+      display: none;
+      margin-top: 14px;
+      background: rgba(164, 208, 125, .15);
+      border: 1.5px solid rgba(164, 208, 125, .4);
+      border-radius: 12px;
+      padding: 14px 18px;
+      text-align: center;
+      animation: fadeUp .4s ease;
+    }
+
+    .ref-id-box p {
+      font-size: .78rem;
+      color: rgba(255, 255, 255, .7);
+      margin-bottom: 6px;
+    }
+
+    .ref-id-box .ref-code {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: .12em;
+      color: var(--light-green);
+    }
+
+    .ref-id-box small {
+      display: block;
+      font-size: .7rem;
+      color: rgba(255, 255, 255, .45);
+      margin-top: 6px;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* TRACKER CARD */
+    .tracker-card {
+      background: var(--dark-green);
+      border-radius: 28px;
+      padding: 44px 40px 40px;
+      box-shadow: 0 16px 48px rgba(40, 60, 20, .18);
+    }
+
+    .tracker-card h2 {
+      text-align: center;
+      color: #fff;
+      font-size: 1.5rem;
+      font-weight: 800;
+      font-style: italic;
+      margin-bottom: 28px;
+    }
+
+    .track-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .track-row input {
+      flex: 1;
+      background: rgba(255, 255, 255, .92);
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-family: 'Poppins', sans-serif;
+      font-size: .84rem;
+      color: var(--text-dark);
+      outline: none;
+      transition: box-shadow .2s, background .2s;
+      letter-spacing: .04em;
+    }
+
+    .track-row input:focus {
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(164, 208, 125, .5);
+    }
+
+    .track-btn {
+      background: var(--cream);
+      color: var(--dark-green);
+      border: none;
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: .82rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background .2s, transform .2s;
+    }
+
+    .track-btn:hover {
+      background: var(--pale-green);
+      transform: translateY(-1px);
+    }
+
+    .track-btn:disabled {
+      opacity: .65;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .track-hint {
+      font-size: .72rem;
+      color: rgba(255, 255, 255, .4);
+      margin-top: -18px;
+      margin-bottom: 18px;
+      padding-left: 4px;
+    }
+
+    .track-info {
+      display: none;
+      margin-bottom: 24px;
+      background: rgba(164, 208, 125, .12);
+      border: 1.5px solid rgba(164, 208, 125, .3);
+      border-radius: 14px;
+      padding: 14px 18px;
+      animation: fadeUp .4s ease;
+    }
+
+    .track-info p {
+      font-size: .8rem;
+      color: rgba(255, 255, 255, .75);
+      line-height: 1.7;
+    }
+
+    .track-info strong {
+      color: var(--light-green);
+    }
+
+    .track-error {
+      display: none;
+      margin-bottom: 16px;
+      background: rgba(255, 120, 80, .12);
+      border: 1.5px solid rgba(224, 112, 96, .4);
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: .8rem;
+      color: #f5b0a0;
+      text-align: center;
+      animation: fadeUp .4s ease;
+    }
+
+    .track-warn {
+      display: none;
+      margin-bottom: 16px;
+      background: rgba(255, 200, 80, .1);
+      border: 1.5px solid rgba(200, 160, 60, .4);
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: .8rem;
+      color: #f5d98a;
+      text-align: center;
+      animation: fadeUp .4s ease;
+    }
+
+    /* TIMELINE */
+    .timeline {
+      position: relative;
+      padding-left: 56px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 20px;
+      top: 21px;
+      bottom: 21px;
+      width: 2px;
+      background: rgba(255, 255, 255, .15);
+      border-radius: 2px;
+    }
+
+    .timeline-step {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .timeline-step:last-child {
+      margin-bottom: 0;
+    }
+
+    .step-circle {
+      position: absolute;
+      left: -56px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .12);
+      border: 2px solid rgba(255, 255, 255, .2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .9rem;
+      font-weight: 800;
+      color: rgba(255, 255, 255, .4);
+      transition: all .4s ease;
+      z-index: 2;
+    }
+
+    .timeline-step.active .step-circle,
+    .timeline-step.done .step-circle {
+      background: var(--light-green);
+      border-color: var(--light-green);
+      color: var(--dark-green);
+      box-shadow: 0 0 0 6px rgba(164, 208, 125, .2);
+    }
+
+    .timeline-step.done .step-circle {
+      background: var(--pale-green);
+    }
+
+    .step-body {
+      background: rgba(255, 255, 255, .07);
+      border-radius: 18px;
+      padding: 20px 22px;
+      border: 1.5px solid rgba(255, 255, 255, .1);
+      transition: all .4s ease;
+    }
+
+    .timeline-step.active .step-body {
+      background: rgba(164, 208, 125, .14);
+      border-color: rgba(164, 208, 125, .35);
+    }
+
+    .timeline-step.done .step-body {
+      background: rgba(164, 208, 125, .08);
+      border-color: rgba(164, 208, 125, .2);
+    }
+
+    .step-badge {
+      display: none;
+      background: rgba(164, 208, 125, .25);
+      color: var(--light-green);
+      border-radius: 20px;
+      padding: 2px 10px;
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      width: fit-content;
+    }
+
+    .timeline-step.active .step-badge,
+    .timeline-step.done .step-badge {
+      display: inline-block;
+    }
+
+    .step-label {
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .4);
+      margin-bottom: 4px;
+    }
+
+    .timeline-step.active .step-label,
+    .timeline-step.done .step-label {
+      color: var(--light-green);
+    }
+
+    .step-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: rgba(255, 255, 255, .35);
+      font-style: italic;
+      margin-bottom: 8px;
+      transition: color .4s;
+    }
+
+    .timeline-step.active .step-title,
+    .timeline-step.done .step-title {
+      color: #fff;
+    }
+
+    .step-desc {
+      font-size: .78rem;
+      color: rgba(255, 255, 255, .4);
+      line-height: 1.65;
+      transition: color .4s;
+    }
+
+    .timeline-step.active .step-desc,
+    .timeline-step.done .step-desc {
+      color: rgba(255, 255, 255, .75);
+    }
+
+    .fade-up {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--dark-green);
+      color: #fff;
+      padding: 60px 8% 0;
+      flex-shrink: 0;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1.6fr;
+      gap: 40px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid rgba(255, 255, 255, .1);
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .footer-brand img {
+      height: 46px;
+      flex-shrink: 0;
+    }
+
+    .footer-brand-text strong {
+      font-size: .75rem;
+      display: block;
+      color: #fff;
+      line-height: 1.45;
+      font-weight: 700;
+    }
+
+    .footer-tagline {
+      font-size: .77rem;
+      opacity: .6;
+      line-height: 1.7;
+      margin-bottom: 18px;
+    }
+
+    .social-row {
+      display: flex;
+      gap: 14px;
+    }
+
+    .social-row a img {
+      width: 26px;
+      height: 26px;
+      filter: brightness(0) invert(1);
+      opacity: .75;
+      transition: .2s;
+      display: block;
+    }
+
+    .social-row a img:hover {
+      opacity: 1;
+    }
+
+    .footer-col h4 {
+      font-size: .8rem;
+      font-weight: 700;
+      color: var(--pale-green);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .footer-col p,
+    .footer-col a {
+      font-size: .82rem;
+      color: rgba(255, 255, 255, .7);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      transition: .2s;
+      line-height: 1.5;
+    }
+
+    .footer-col a:hover {
+      color: #fff;
+    }
+
+    .footer-col img {
+      width: 18px;
+      filter: brightness(0) invert(1);
+      opacity: .7;
+      flex-shrink: 0;
+    }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 0;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .footer-copy {
+      font-size: .72rem;
+      opacity: .4;
+    }
+
+    .footer-legal {
+      display: flex;
+      gap: 20px;
+    }
+
+    .footer-legal a {
+      font-size: .72rem;
+      opacity: .4;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .footer-legal a:hover {
+      opacity: .8;
+    }
+
+    @media(max-width: 960px) {
+      .report-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media(max-width: 768px) {
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 64px;
+        left: 0;
+        right: 0;
+        background: var(--dark-green);
+        padding: 16px 6%;
+        gap: 4px;
+        border-top: 1px solid rgba(255, 255, 255, .1);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, .15);
+      }
+
+      .nav-links.open {
+        display: flex;
+      }
+
+      .nav-links li {
+        width: 100%;
+      }
+
+      .nav-links a {
+        padding: 10px 0;
+        display: block;
+        border-bottom: 1px solid rgba(255, 255, 255, .06);
+      }
+
+      .nav-links .report-btn {
+        margin-top: 8px;
+        text-align: center;
+        border-radius: 8px;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+
+      main {
+        padding: 48px 5% 60px;
+      }
+
+      .form-card,
+      .tracker-card {
+        padding: 32px 22px 28px;
+      }
+
+      .timeline {
+        padding-left: 48px;
+      }
+
+      .step-circle {
+        left: -48px;
+        width: 36px;
+        height: 36px;
+        font-size: .82rem;
+      }
+    }
+
+    @media(max-width: 480px) {
+      nav {
+        padding: 0 5%;
+      }
+
+      .logo-text {
+        display: none;
+      }
+
+      .track-row {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAV -->
+   <nav>
+      <div class="logo">
+        <img src="https://i.imgur.com/h9fxKYo.png" alt="Logo">
+        <div class="logo-text">
+          <strong>The Community Waste Management and Reporting System</strong>
+          <span>For Greener Future</span>
+        </div>
+      </div>
+      <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="index.html" class="active">HOME</a></li>
+        <li><a href="about.html">ABOUT</a></li>
+        <li><a href="waste.html">WASTE</a></li>
+        <li><a href="community.html">COMMUNITY</a></li>
+        <li><a href="contact.html">CONTACT</a></li>
+        <li><a href="report.html" class="report-btn">REPORT</a></li>
+        <li>
+          <div class="user-chip" id="user-chip">
+            <div class="user-chip-avatar" id="user-avatar">?</div>
+            <span id="user-name-display">Resident</span>
+            <button class="logout-btn" onclick="handleLogout()" title="Log out">
+              <i class="fas fa-sign-out-alt"></i>
+            </button>
+          </div>
+        </li>
+      </ul>
+    </nav>
+
+  <!-- MAIN -->
+  <main>
+
+    <div class="page-header">
+      <h1 class="fade-up">Report System Tracker</h1>
+      <p class="fade-up" style="transition-delay:.08s">
+        Submit a waste concern in your community and track its progress — from filing to resolution.
+      </p>
+    </div>
+
+    <div class="report-layout">
+
+      <!-- LEFT: Submit Report -->
+      <div class="form-card fade-up" style="transition-delay:.12s">
+        <h2>Submit a Report</h2>
+
+        <div class="form-group">
+          <input type="text" id="r-name" placeholder="Your Name" autocomplete="name" maxlength="80">
+        </div>
+        <div class="form-group">
+          <input type="email" id="r-email" placeholder="Your Email" autocomplete="email">
+        </div>
+        <div class="form-group">
+          <textarea id="r-concern"
+            placeholder="Your Concern (maximum of 3 reports per day). You can also send a proof picture via Google Drive link (https://drive.google.com/):"
+            maxlength="1000"></textarea>
+          <div class="char-hint"><span id="char-count">0</span> / 1000</div>
+        </div>
+
+        <button class="submit-btn" id="submit-btn" onclick="submitReport()">Report</button>
+
+        <div class="ref-id-box" id="ref-id-box">
+          <p><i class="fas fa-circle-check" style="margin-right:6px;color:var(--light-green)"></i>Report submitted
+            successfully!</p>
+          <div class="ref-code" id="submit-ref-display">—</div>
+          <small>Save this Reference ID to track your report's progress.</small>
+        </div>
+
+        <div class="msg-box error" id="submit-error">
+          <i class="fas fa-triangle-exclamation" style="margin-right:8px"></i>
+          <span id="submit-error-msg">Something went wrong. Please try again.</span>
+        </div>
+      </div>
+
+      <!-- RIGHT: Tracker -->
+      <div class="tracker-card fade-up" style="transition-delay:.18s">
+        <h2>Track Your Report</h2>
+
+        <div class="track-row">
+          <input type="text" id="track-id" placeholder="Enter Reference ID (e.g. REQ-XXXXXXXX)" autocomplete="off"
+            maxlength="16" style="text-transform:uppercase;">
+          <button class="track-btn" id="track-btn" onclick="trackReport()">
+            <i class="fas fa-magnifying-glass" style="margin-right:5px"></i>Track
+          </button>
+        </div>
+        <p class="track-hint">Enter the Reference ID you received after submitting your report.</p>
+
+        <div class="track-warn" id="track-warn">
+          <i class="fas fa-triangle-exclamation" style="margin-right:8px"></i>
+          Please enter a valid Reference ID starting with <strong>REQ-</strong>.
+        </div>
+
+        <div class="track-info" id="track-info">
+          <p>Reference ID: <strong id="ti-refid">—</strong></p>
+          <p>Name: <strong id="ti-name">—</strong></p>
+          <p>Concern: <strong id="ti-concern">—</strong></p>
+          <p>Date Filed: <strong id="ti-date">—</strong></p>
+          <p>Current Status: <strong id="ti-status">—</strong></p>
+        </div>
+
+        <div class="track-error" id="track-error">
+          <i class="fas fa-circle-xmark" style="margin-right:8px"></i>
+          No report found for that Reference ID. Please double-check and try again.
+        </div>
+
+        <div class="timeline" id="timeline">
+
+          <div class="timeline-step" id="step-pending">
+            <div class="step-circle">1</div>
+            <div class="step-body">
+              <div class="step-badge">STEP 1</div>
+              <div class="step-label">Stage 1</div>
+              <div class="step-title">PENDING</div>
+              <div class="step-desc">Your report is currently undergoing verification through vetted photo evidence and
+                authenticated location data. We ensure every entry is grounded in legitimate information before moving
+                to the next stage.</div>
+            </div>
+          </div>
+
+          <div class="timeline-step" id="step-inprogress">
+            <div class="step-circle">2</div>
+            <div class="step-body">
+              <div class="step-badge">STEP 2</div>
+              <div class="step-label">Stage 2</div>
+              <div class="step-title">IN-PROGRESS</div>
+              <div class="step-desc">Active intervention is underway as cleanup solutions are deployed based on your
+                confirmed report. On-ground teams are currently addressing the issue using the specific site details
+                provided.</div>
+            </div>
+          </div>
+
+          <div class="timeline-step" id="step-resolved">
+            <div class="step-circle">3</div>
+            <div class="step-body">
+              <div class="step-badge">STEP 3</div>
+              <div class="step-label">Stage 3</div>
+              <div class="step-title">RESOLVED OR UNRESOLVED</div>
+              <div class="step-desc">The concern has been successfully cleared and finalized, backed by confirmed
+                cleanup data and authenticated facts. This report is now officially closed in our verified community
+                waste record. On the other hand, if it's unresolved, action is currently paused due to verified
+                hazardous constraints or specialized logistical issues that require higher municipal intervention. We
+                are maintaining an authenticated log of the situation until a safe solution is found.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">
+          <img src="https://i.imgur.com/h9fxKYo.png" alt="Logo">
+          <div class="footer-brand-text">
+            <strong>Community Waste<br>Management &<br>Reporting System</strong>
+          </div>
+        </div>
+        <p class="footer-tagline">Cleaning our community through transparency, awareness, and verified action. Every
+          report is backed by legitimate data to ensure total accountability for a waste-free future.</p>
+        <div class="social-row">
+          <a href="https://www.instagram.com/kentii_88/"><img src="https://i.imgur.com/jDxVF6i.png" alt="Instagram"></a>
+          <a href="https://www.facebook.com/kent.reyes.904339"><img src="https://i.imgur.com/KzCfWHk.png" alt="Facebook"></a>
+          <a href="https://x.com/valerio183?s=21"><img src="https://i.imgur.com/xsraSaI.png" alt="X"></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <a href="index.html">HOME</a>
+        <a href="waste.html">WASTE</a>
+        <a href="community.html">COMMUNITY</a>
+      </div>
+      <div class="footer-col">
+        <h4>Location</h4>
+        <p>Barangay 7, Bliss<br>Cuenca Batangas</p>
+      </div>
+      <div class="footer-col">
+        <h4>Get in Touch</h4>
+        <a href="mailto:kentreyes208@gmail.com">
+          <img src="https://i.imgur.com/6YEUGwy.png" alt="Email"> kentreyes208@gmail.com
+        </a>
+        <a href="tel:09369433099">
+          <img src="https://i.imgur.com/VXfQoIg.png" alt="Phone"> 09369433099
+        </a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">ALL RIGHT RESERVED 2026</p>
+      <div class="footer-legal">
+        <a href="#">PRIVACY POLICY</a>
+        <a href="#">TERMS OF SERVICE</a>
+        <a href="#">WASTE REPORT</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+   
+   
+    function handleLogout() {
+      sessionStorage.removeItem('brgy7_user');
+      var content = document.getElementById('main-content');
+      var overlay = document.getElementById('auth-overlay');
+      content.style.opacity = '0';
+      setTimeout(function () {
+        content.classList.remove('unlocked');
+        overlay.style.opacity = '1';
+        overlay.style.display = 'flex';
+        // Reset login form
+        document.getElementById('form-login').reset();
+        switchTab('login');
+      }, 400);
+    }
+    // ─────────────────────────────────────────────────
+    //  SHEETDB API URL
+    // ─────────────────────────────────────────────────
+    var SHEETDB_URL = 'https://sheetdb.io/api/v1/0lxgp4a55au0r';
+
+
+    var hamburger = document.getElementById('hamburger');
+    var navLinks = document.getElementById('nav-links');
+    hamburger.addEventListener('click', function () {
+      hamburger.classList.toggle('open');
+      navLinks.classList.toggle('open');
+    });
+    navLinks.querySelectorAll('a').forEach(function (a) {
+      a.addEventListener('click', function () {
+        hamburger.classList.remove('open');
+        navLinks.classList.remove('open');
+      });
+    });
+     //  LOG OUT 
+    
+  function initUserChip() {
+    // 1. Get the  JSON object using the correct key
+    var stored = sessionStorage.getItem('brgy7_user');
+
+    var name = 'Resident'; // default fallback
+
+    if (stored) {
+        try {
+            var user = JSON.parse(stored);
+            // 2. Extract just the first name (like "Kent Reyes" → "Kent")
+            if (user && user.name) {
+                name = user.name.split(' ')[0];
+            }
+        } catch (e) { /* ignore bad JSON */ }
+    }
+
+    // 3.  the chip
+    var avatar      = document.getElementById('user-avatar');
+    var nameDisplay = document.getElementById('user-name-display');
+
+    if (nameDisplay) nameDisplay.textContent = name;
+    if (avatar)      avatar.textContent = name.charAt(0).toUpperCase();
+}
+
+// Call it on page load
+initUserChip();
+
+function handleLogout() {
+    // 1. Wipe the stored name from BOTH storages 
+    sessionStorage.removeItem('user.name');
+    localStorage.removeItem('user.name');
+
+    // 2. Send the user back to the login / home page
+    window.location.href = 'index.html';
+}
+
+// ← Call this once the page loads so the chip populates immediately
+initUserChip();
+
+    // ── SCROLL REVEAL ──
+    var revEls = document.querySelectorAll('.fade-up');
+    var revObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) e.target.classList.add('visible');
+      });
+    }, { threshold: 0.08 });
+    revEls.forEach(function (el) { revObs.observe(el); });
+
+    // ── CHAR COUNTER ──
+    document.getElementById('r-concern').addEventListener('input', function () {
+      document.getElementById('char-count').textContent = this.value.length;
+    });
+
+    // ── AUTO-UPPERCASE TRACKING INPUT ──
+    document.getElementById('track-id').addEventListener('input', function () {
+      var pos = this.selectionStart;
+      this.value = this.value.toUpperCase();
+      this.setSelectionRange(pos, pos);
+    });
+
+    // ── HELPERS ──
+    function showEl(el, show) {
+      if (el) el.style.display = show ? 'block' : 'none';
+    }
+
+    function generateRefId() {
+      var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      var id = 'REQ-';
+      for (var i = 0; i < 8; i++) {
+        id += chars[Math.floor(Math.random() * chars.length)];
+      }
+      return id;
+    }
+
+    function getToday() {
+      var d = new Date();
+      var mm = String(d.getMonth() + 1).padStart(2, '0');
+      var dd = String(d.getDate()).padStart(2, '0');
+      return d.getFullYear() + '-' + mm + '-' + dd;
+    }
+
+    // ── POST: SUBMIT REPORT ──
+    async function submitReport() {
+      var name = document.getElementById('r-name').value.trim();
+      var email = document.getElementById('r-email').value.trim();
+      var concern = document.getElementById('r-concern').value.trim();
+      var btn = document.getElementById('submit-btn');
+      var errorEl = document.getElementById('submit-error');
+      var refBox = document.getElementById('ref-id-box');
+
+      if (!name || !email || !concern) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      var refId = generateRefId();
+      btn.disabled = true;
+      btn.innerHTML = '<span class="btn-spinner"></span>Submitting...';
+      showEl(errorEl, false);
+      showEl(refBox, false);
+
+    
+      // tracking_id | name | email | concern | status | date
+      var payload = {
+        data: [{
+          tracking_id: refId,
+          name: name,
+          email: email,
+          concern: concern,
+          status: 'Pending',
+          date: getToday()
+        }]
+      };
+
+      try {
+        var res = await fetch(SHEETDB_URL, {
+          method: 'POST',
+          // Explicit headers needed for SheetDB to parse JSON body correctly
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        
+        if (res.ok) {
+          document.getElementById('submit-ref-display').textContent = refId;
+          showEl(refBox, true);
+          document.getElementById('r-name').value = '';
+          document.getElementById('r-email').value = '';
+          document.getElementById('r-concern').value = '';
+          document.getElementById('char-count').textContent = '0';
+        } else {
+       
+          var errBody = await res.text();
+          console.error('SheetDB POST error:', res.status, errBody);
+          document.getElementById('submit-error-msg').textContent =
+            'Submission failed (HTTP ' + res.status + '). Check console for details.';
+          showEl(errorEl, true);
+        }
+      } catch (err) {
+        //  4: file:/// CORS — if fetch is blocked, surface a clear message
+        console.error('Submit network error (possible CORS if running via file:///): ', err);
+        document.getElementById('submit-error-msg').textContent =
+          'Network error. If testing locally via file:///, open via a local server (e.g. VS Code Live Server).';
+        showEl(errorEl, true);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = 'Report';
+      }
+    }
+
+    // ── GET: TRACK REPORT ──
+    async function trackReport() {
+      var rawVal = document.getElementById('track-id').value.trim().toUpperCase();
+      var btn = document.getElementById('track-btn');
+      var infoEl = document.getElementById('track-info');
+      var errorEl = document.getElementById('track-error');
+      var warnEl = document.getElementById('track-warn');
+
+      showEl(infoEl, false);
+      showEl(errorEl, false);
+      showEl(warnEl, false);
+      resetTimeline();
+
+      if (!rawVal) return;
+
+      if (!/^REQ-[A-Z0-9]{8}$/.test(rawVal)) {
+        showEl(warnEl, true);
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<span class="btn-spinner"></span>';
+
+      try {
+        //  SheetDB search endpoint — column name must match sheet header exactly
+        // Using limit=1 to reduce payload 
+        var searchUrl = SHEETDB_URL + '/search?tracking_id=' + encodeURIComponent(rawVal) + '&limit=1';
+
+        var res = await fetch(searchUrl, {
+          method: 'GET',
+          headers: { 'Accept': 'application/json' }
+        });
+
+        if (!res.ok) {
+          console.error('SheetDB GET error:', res.status, await res.text());
+          showEl(errorEl, true);
+          return;
+        }
+
+        var rows = await res.json();
+
+        //  6: SheetDB returns [] (empty array) when not found — not null
+        if (!Array.isArray(rows) || rows.length === 0) {
+          showEl(errorEl, true);
+        } else {
+          var data = rows[0];
+
+          document.getElementById('ti-refid').textContent = data.tracking_id || '—';
+          document.getElementById('ti-name').textContent = data.name || '—';
+          document.getElementById('ti-concern').textContent = data.concern || '—';
+          document.getElementById('ti-date').textContent = data.date || '—';
+          document.getElementById('ti-status').textContent = data.status || '—';
+
+          showEl(infoEl, true);
+
+          //  7: Pass the raw status string — updateTimeline handles normalization
+          updateTimeline(data.status || '');
+        }
+      } catch (err) {
+        console.error('Track network error (possible CORS if running via file:///): ', err);
+        showEl(errorEl, true);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-magnifying-glass" style="margin-right:5px"></i>Track';
+      }
+    }
+  
+
+    // ── TIMELINE LOGIC ──
+    function resetTimeline() {
+      ['step-pending', 'step-inprogress', 'step-resolved'].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) { el.classList.remove('active', 'done'); }
+      });
+    }
+   
+    function updateTimeline(status) {
+      // Always reset first to avoid stale classes from a previous lookup
+      resetTimeline();
+
+      if (!status || typeof status !== 'string') return;
+
+      var pending = document.getElementById('step-pending');
+      var inprog = document.getElementById('step-inprogress');
+      var resolved = document.getElementById('step-resolved');
+
+      //   lowercase, strip ALL whitespace, dashes, underscores
+      //  handles: "In-Progress", "in progress", "IN_PROGRESS", "inprogress" etc.
+      var s = status.toLowerCase().replace(/[\s\-_]/g, '');
+
+      //  9: Order of checks matters — check most-advanced states first
+      // to prevent "pending" substring accidentally matching "inprogress"
+      if (s === 'resolved' || s === 'unresolved' || s.indexOf('resolved') !== -1) {
+        // Stage 3 — all previous steps done
+        if (pending) pending.classList.add('done');
+        if (inprog) inprog.classList.add('done');
+        if (resolved) resolved.classList.add('active');
+
+      } else if (s === 'inprogress' || s.indexOf('progress') !== -1) {
+        // Stage 2 — pending done, in-progress active
+        if (pending) pending.classList.add('done');
+        if (inprog) inprog.classList.add('active');
+
+      } else {
+        // Stage 1 — default / "pending" / anything unrecognized
+        if (pending) pending.classList.add('active');
+      }
+    }
+
+    // ── ENTER KEY SUPPORT ──
+    document.getElementById('track-id').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') trackReport();
+    });
+    // ── UGH NAKAKAPAGOD! 6767  ──
+  </script>
+ 
+</body>
+
+</html>

@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waste Tracker – Community Waste Management & Reporting System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <style>
+        :root {
+            --dark-green: #3d4f2e;
+            --mid-green: #5a7a40;
+            --light-green: #8ab55a;
+            --pale-green: #b5d68a;
+            --cream: #e9e5d3;
+            --cream-dark: #d9d4b8;
+            --white-glass: rgba(255, 255, 255, 0.78);
+            --text-dark: #2c3a1e;
+            --text-mid: #4a5e35;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--cream);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        /* ── NAV ── */
+      nav {
+      background: var(--dark-green);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 6%;
+      height: 64px;
+      position: sticky;
+      top: 0;
+      z-index: 2000;
+      flex-shrink: 0;
+    }
+
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo img { height: 40px; display: block; }
+    .logo-text { display: flex; flex-direction: column; line-height: 1.2; }
+    .logo-text strong { color: #fff; font-size: .68rem; font-weight: 700; letter-spacing: .01em; }
+    .logo-text span { color: var(--pale-green); font-size: .58rem; }
+
+    .nav-links { display: flex; list-style: none; gap: 20px; align-items: center; }
+    .nav-links a {
+      text-decoration: none; color: var(--pale-green); font-weight: 700;
+      font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; transition: color .2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: #fff; }
+    .nav-links .report-btn {
+      background: var(--cream); color: var(--dark-green) !important;
+      padding: 7px 18px; border-radius: 6px; font-weight: 800; border: 2px solid var(--cream);
+    }
+    .nav-links .report-btn:hover { background: var(--pale-green); border-color: var(--pale-green); }
+
+    /* Logged-in user chip */
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 50px;
+      padding: 5px 14px 5px 8px;
+    }
+    .user-chip-avatar {
+      width: 28px; height: 28px;
+      background: var(--light-green);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .75rem; font-weight: 800; color: var(--dark-green);
+    }
+    .user-chip span { font-size: .72rem; font-weight: 600; color: #fff; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .logout-btn {
+      background: none; border: none; color: rgba(255,255,255,.5);
+      cursor: pointer; font-size: .75rem; margin-left: 4px; transition: color .2s;
+    }
+    .logout-btn:hover { color: #fff; }
+
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 24px;
+            height: 2.5px;
+            background: #fff;
+            border-radius: 2px;
+            transition: .3s;
+        }
+
+        .hamburger.open span:nth-child(1) {
+            transform: translateY(7.5px) rotate(45deg);
+        }
+
+        .hamburger.open span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.open span:nth-child(3) {
+            transform: translateY(-7.5px) rotate(-45deg);
+        }
+
+        /* ── HERO BANNER ── */
+        .page-banner {
+            text-align: center;
+            padding: 60px 8% 40px;
+        }
+
+        .banner-pill {
+            display: inline-block;
+            background: var(--dark-green);
+            color: #fff;
+            font-size: clamp(1.4rem, 3vw, 2rem);
+            font-weight: 800;
+            padding: 18px 54px;
+            border-radius: 50px;
+            margin-bottom: 16px;
+            letter-spacing: .01em;
+        }
+
+        .banner-sub {
+            font-size: .9rem;
+            color: var(--text-mid);
+            max-width: 560px;
+            margin: 0 auto;
+        }
+
+        /* ── TRACKER CARD ── */
+        .tracker-card-wrap {
+            padding: 0 8% 60px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .tracker-outer {
+            background: var(--dark-green);
+            border-radius: 28px;
+            padding: 20px;
+            width: 100%;
+            max-width: 640px;
+            box-shadow: 0 16px 48px rgba(40, 60, 20, .18);
+        }
+
+        .tracker-inner-pad {
+            background: var(--cream);
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .tracker-inner-dark {
+            background: var(--dark-green);
+            border-radius: 10px;
+            padding: 32px 24px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Map idle state */
+        .map-idle {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .map-icon-wrap {
+            width: 120px;
+            height: 120px;
+            border: 2.5px solid rgba(255, 255, 255, .25);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .map-icon-wrap svg {
+            width: 80px;
+            height: 80px;
+            opacity: .85;
+        }
+
+        .open-btn {
+            background: var(--light-green);
+            color: var(--dark-green);
+            border: none;
+            padding: 13px 44px;
+            border-radius: 50px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: .9rem;
+            cursor: pointer;
+            letter-spacing: .04em;
+            transition: .25s;
+            box-shadow: 0 4px 18px rgba(138, 181, 90, .35);
+        }
+
+        .open-btn:hover {
+            background: var(--pale-green);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(138, 181, 90, .45);
+        }
+
+        /* Live tracker (hidden until opened) */
+        #live-tracker {
+            display: none;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        /* Status bar */
+        .status-bar {
+            background: rgba(255, 255, 255, .08);
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-bottom: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .status-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: .78rem;
+            color: rgba(255, 255, 255, .9);
+            font-weight: 500;
+        }
+
+        .status-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--light-green);
+            animation: pulse 1.4s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: .5;
+                transform: scale(1.4);
+            }
+        }
+
+        /* Map container */
+        #map {
+            width: 100%;
+            height: 340px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            z-index: 1;
+        }
+
+        /* Progress steps inside tracker */
+        .progress-steps {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            margin-bottom: 12px;
+        }
+
+        .prog-step {
+            flex: 1;
+            text-align: center;
+            font-size: .68rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, .5);
+            position: relative;
+            transition: color .4s;
+        }
+
+        .prog-step.active {
+            color: #fff;
+        }
+
+        .prog-step.done {
+            color: var(--pale-green);
+        }
+
+        .prog-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .12);
+            border: 2px solid rgba(255, 255, 255, .2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 6px;
+            font-size: .72rem;
+            color: rgba(255, 255, 255, .4);
+            transition: .4s;
+        }
+
+        .prog-step.active .prog-dot {
+            background: var(--mid-green);
+            border-color: var(--light-green);
+            color: #fff;
+        }
+
+        .prog-step.done .prog-dot {
+            background: var(--light-green);
+            border-color: var(--pale-green);
+            color: var(--dark-green);
+        }
+
+        .prog-line {
+            flex: 0 0 40px;
+            height: 2px;
+            background: rgba(255, 255, 255, .15);
+            transition: .4s;
+        }
+
+        .prog-line.done {
+            background: var(--light-green);
+        }
+
+        /* Distance bar */
+        .dist-bar-wrap {
+            background: rgba(255, 255, 255, .08);
+            border-radius: 8px;
+            padding: 10px 14px;
+        }
+
+        .dist-bar-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: .72rem;
+            color: rgba(255, 255, 255, .65);
+            margin-bottom: 6px;
+        }
+
+        .dist-bar-track {
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, .12);
+            overflow: hidden;
+        }
+
+        .dist-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+            background: linear-gradient(90deg, var(--mid-green), var(--light-green));
+            width: 0%;
+            transition: width .6s ease;
+        }
+
+        /* Start/Reset button */
+        .start-btn {
+            background: var(--light-green);
+            color: var(--dark-green);
+            border: none;
+            padding: 11px 32px;
+            border-radius: 50px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: .84rem;
+            cursor: pointer;
+            letter-spacing: .04em;
+            transition: .25s;
+            margin-top: 10px;
+        }
+
+        .start-btn:hover {
+            background: var(--pale-green);
+        }
+
+        /* ── ROUTE SECTION ── */
+        .route-section {
+            padding: 20px 8% 80px;
+        }
+
+        .route-title {
+            text-align: center;
+            font-size: clamp(1.6rem, 3vw, 2.4rem);
+            font-weight: 800;
+            color: var(--mid-green);
+            margin-bottom: 48px;
+            font-style: italic;
+        }
+
+        .route-flow {
+            display: flex;
+            align-items: stretch;
+            gap: 0;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .route-node {
+            flex: 1;
+            background: var(--dark-green);
+            border-radius: 16px;
+            padding: 28px 20px;
+            color: #fff;
+            text-align: center;
+            position: relative;
+            transition: transform .3s;
+        }
+
+        .route-node:hover {
+            transform: translateY(-4px);
+        }
+
+        .route-node h3 {
+            font-size: .95rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .route-node.active-node {
+            background: var(--mid-green);
+        }
+
+        .route-node.done-node {
+            opacity: .7;
+        }
+
+        .route-streets {
+            list-style: none;
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .route-streets li {
+            font-size: .7rem;
+            color: rgba(255, 255, 255, .75);
+            letter-spacing: .03em;
+            text-transform: uppercase;
+        }
+
+        .route-streets li.street-done {
+            color: var(--pale-green);
+        }
+
+        .route-streets li.street-active {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .route-connector {
+            flex: 0 0 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .route-line {
+            width: 100%;
+            height: 2px;
+            background: var(--dark-green);
+            position: relative;
+        }
+
+        .route-line::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            height: 8px;
+            width: 8px;
+            border-radius: 50%;
+            background: var(--mid-green);
+            right: 0;
+            left: auto;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            background: var(--dark-green);
+            color: #fff;
+            padding: 60px 8% 0;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1.6fr;
+            gap: 40px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid rgba(255, 255, 255, .1);
+        }
+
+        .footer-logo-img {
+            height: 52px;
+            margin-bottom: 14px;
+            display: block;
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .footer-brand-text strong {
+            font-size: .82rem;
+            display: block;
+            color: #fff;
+        }
+
+        .footer-brand-text span {
+            font-size: .72rem;
+            color: var(--pale-green);
+        }
+
+        .footer-tagline {
+            font-size: .78rem;
+            opacity: .6;
+            line-height: 1.7;
+            margin-bottom: 18px;
+        }
+
+        .social-row {
+            display: flex;
+            gap: 14px;
+        }
+
+        .social-row a {
+            display: block;
+        }
+
+        .social-row img {
+            width: 26px;
+            height: 26px;
+            filter: brightness(0) invert(1);
+            opacity: .75;
+            transition: .2s;
+        }
+
+        .social-row img:hover {
+            opacity: 1;
+        }
+
+        .footer-col h4 {
+            font-size: .82rem;
+            font-weight: 700;
+            color: var(--pale-green);
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .footer-col p,
+        .footer-col a {
+            font-size: .84rem;
+            color: rgba(255, 255, 255, .7);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            transition: .2s;
+        }
+
+        .footer-col a:hover {
+            color: #fff;
+        }
+
+        .footer-col img {
+            width: 18px;
+            filter: brightness(0) invert(1);
+            opacity: .7;
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 0;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .footer-copy {
+            font-size: .72rem;
+            opacity: .4;
+        }
+
+        .footer-legal {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-legal a {
+            font-size: .72rem;
+            opacity: .4;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .footer-legal a:hover {
+            opacity: .8;
+        }
+
+        /* ── FADE UP ── */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity .6s, transform .6s;
+        }
+
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px) {
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 64px;
+        left: 0;
+        right: 0;
+        background: var(--dark-green);
+        padding: 16px 6%;
+        gap: 4px;
+        border-top: 1px solid rgba(255, 255, 255, .1);
+    }
+
+    .nav-links.open {
+        display: flex;
+    }
+
+    .nav-links li {
+        width: 100%;
+    }
+
+    .nav-links a {
+        padding: 10px 0;
+        display: block;
+        border-bottom: 1px solid rgba(255, 255, 255, .06);
+    }
+
+    .nav-links .report-btn {
+        margin-top: 8px;
+        text-align: center;
+        border-radius: 8px;
+    }
+
+    .hamburger {
+        display: flex;
+    }
+
+    /* Mobile Route Layout */
+    .route-flow {
+        flex-direction: column;
+        gap: 0;
+        align-items: center;
+    }
+
+    .route-step {
+        width: 100%;
+        max-width: 320px;
+        position: relative;
+        z-index: 2;
+        background-color: #556B2F; 
+        margin: 0 auto;
+    }
+
+    .route-connector {
+        flex: none;
+        width: 2px;
+        height: 40px;
+        background: var(--dark-green);
+        transform: none;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .progress-steps {
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+}
+
+/* ── DESKTOP RESTORATION ── */
+@media(min-width:769px) {
+    .route-flow {
+        flex-direction: row;
+        align-items: center;
+        gap: 0;
+    }
+
+    .route-connector {
+        flex: 1;
+        height: 2px;
+        background: var(--dark-green);
+        transform: none;
+        min-width: 50px;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .route-step {
+        position: relative;
+        z-index: 2;
+    }
+}
+
+@media(max-width:480px) {
+    .page-banner,
+    .tracker-card-wrap,
+    .route-section {
+        padding-left: 5%;
+        padding-right: 5%;
+    }
+
+    nav {
+        padding: 0 5%;
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .banner-pill {
+        padding: 14px 28px;
+        font-size: 1.1rem;
+    }
+}
+    </style>
+</head>
+
+<body>
+
+    <!-- ── NAV ── -->
+     <nav>
+      <div class="logo">
+        <img src="https://i.imgur.com/h9fxKYo.png" alt="Logo">
+        <div class="logo-text">
+          <strong>The Community Waste Management and Reporting System</strong>
+          <span>For Greener Future</span>
+        </div>
+      </div>
+      <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="index.html" class="active">HOME</a></li>
+        <li><a href="about.html">ABOUT</a></li>
+        <li><a href="waste.html">WASTE</a></li>
+        <li><a href="community.html">COMMUNITY</a></li>
+        <li><a href="contact.html">CONTACT</a></li>
+        <li><a href="report.html" class="report-btn">REPORT</a></li>
+        <li>
+          <div class="user-chip" id="user-chip">
+            <div class="user-chip-avatar" id="user-avatar">?</div>
+            <span id="user-name-display">Resident</span>
+            <button class="logout-btn" onclick="handleLogout()" title="Log out">
+              <i class="fas fa-sign-out-alt"></i>
+            </button>
+          </div>
+        </li>
+      </ul>
+    </nav>
+    <!-- ── BANNER ── -->
+    <div class="page-banner">
+        <div class="banner-pill fade-up">Track The Waste Truck</div>
+        <p class="banner-sub fade-up" style="transition-delay:.08s">Stop chasing the truck and start tracking it with
+            real-time updates delivered right to your screen.</p>
+    </div>
+
+    <!-- ── TRACKER CARD ── -->
+    <div class="tracker-card-wrap">
+        <div class="tracker-outer fade-up" style="transition-delay:.14s">
+            <div class="tracker-inner-pad">
+                <div class="tracker-inner-dark" id="tracker-box">
+
+                    <!-- IDLE STATE -->
+                    <div class="map-idle" id="idle-view">
+                        <div class="map-icon-wrap">
+                            <svg viewBox="0 0 80 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="4" y="20" width="72" height="46" rx="6" stroke="rgba(255,255,255,0.6)"
+                                    stroke-width="2.5" />
+                                <path d="M4 26 Q40 10 76 26" stroke="rgba(255,255,255,0.4)" stroke-width="2"
+                                    fill="none" />
+                                <circle cx="50" cy="32" r="8" stroke="rgba(180,220,100,0.9)" stroke-width="2.5"
+                                    fill="none" />
+                                <path d="M50 40 L50 46" stroke="rgba(180,220,100,0.9)" stroke-width="2.5"
+                                    stroke-linecap="round" />
+                                <path d="M50 24 L50 18" stroke="rgba(180,220,100,0.6)" stroke-width="2"
+                                    stroke-linecap="round" />
+                                <path d="M20 44 L38 44 M20 52 L32 52" stroke="rgba(255,255,255,0.3)" stroke-width="2"
+                                    stroke-linecap="round" />
+                            </svg>
+                        </div>
+                        <button class="open-btn" id="open-tracker-btn">Open Tracker</button>
+                    </div>
+
+                    <!-- LIVE STATE (hidden) -->
+                    <div id="live-tracker">
+                        <!-- Status bar -->
+                        <div class="status-bar">
+                            <div class="status-pill">
+                                <div class="status-dot" id="status-dot"></div>
+                                <span id="status-text">Initializing...</span>
+                            </div>
+                            <div class="status-pill">
+                                <i class="fas fa-clock" style="color:var(--pale-green)"></i>
+                                <span>ETA: <strong id="eta-text">—</strong></span>
+                            </div>
+                            <div class="status-pill">
+                                <i class="fas fa-route" style="color:var(--pale-green)"></i>
+                                <span>Dist: <strong id="dist-text">—</strong></span>
+                            </div>
+                        </div>
+
+                        <!-- Progress steps -->
+                        <div class="progress-steps" id="prog-steps">
+                            <div class="prog-step" id="ps-0">
+                                <div class="prog-dot"><i class="fas fa-check" style="font-size:.6rem"></i></div>
+                                <div>Barangay Hall</div>
+                            </div>
+                            <div class="prog-line" id="pl-0"></div>
+                            <div class="prog-step" id="ps-1">
+                                <div class="prog-dot">2</div>
+                                <div>Inner Streets</div>
+                            </div>
+                            <div class="prog-line" id="pl-1"></div>
+                            <div class="prog-step" id="ps-2">
+                                <div class="prog-dot">3</div>
+                                <div>Complete</div>
+                            </div>
+                        </div>
+
+                        <!-- Map -->
+                        <div id="map"></div>
+
+                        <!-- Distance bar -->
+                        <div class="dist-bar-wrap">
+                            <div class="dist-bar-label">
+                                <span>Route Progress</span>
+                                <span id="dist-pct">0%</span>
+                            </div>
+                            <div class="dist-bar-track">
+                                <div class="dist-bar-fill" id="dist-fill"></div>
+                            </div>
+                        </div>
+
+                        <!-- Control -->
+                        <div style="text-align:center;">
+                            <button class="start-btn" id="start-btn">▶ Start Tracking</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── ROUTE FLOW ── -->
+    <section class="route-section">
+        <h2 class="route-title fade-up">Truck Usual Route</h2>
+        <div class="route-flow fade-up" style="transition-delay:.1s">
+            <div class="route-node" id="rn-hall">
+                <h3>Barangay Hall</h3>
+                <p style="font-size:.72rem;color:rgba(255,255,255,.65);margin-top:6px;">Starting point &amp; waste
+                    collection depot</p>
+            </div>
+            <div class="route-connector">
+                <div class="route-line"></div>
+            </div>
+            <div class="route-node active-node" id="rn-streets">
+                <h3>On The Way<br><span style="font-style:italic;font-weight:400;font-size:.85rem">(Streets)</span></h3>
+                <ul class="route-streets" id="route-streets-list">
+                    <li id="rs-0">Rizal Street</li>
+                    <li id="rs-1">Don Juan Street</li>
+                    <li id="rs-2">Kaisahanan Street</li>
+                    <li id="rs-3">Romula Street</li>
+                    <li id="rs-4">Pagsanha Street</li>
+                    <li id="rs-5">Hanala Street</li>
+                </ul>
+            </div>
+            <div class="route-connector">
+                <div class="route-line"></div>
+            </div>
+            <div class="route-node" id="rn-done">
+                <h3>Completed</h3>
+                <p style="font-size:.72rem;color:rgba(255,255,255,.65);margin-top:6px;">All streets cleared &amp;
+                    collected</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── FOOTER ── -->
+    <footer>
+        <div class="footer-grid">
+            <div>
+                <div class="footer-brand">
+                    <img src="https://i.imgur.com/h9fxKYo.png" alt="Logo" class="footer-logo-img"
+                        style="height:48px;margin-bottom:0;">
+                    <div class="footer-brand-text" style="padding-top:4px;">
+                        <strong>Community Waste<br>Management &<br>Reporting System</strong>
+                    </div>
+                </div>
+                <p class="footer-tagline">Cleaning our community through transparency, awareness, and verified action.
+                    Every report is backed by legitimate data to ensure total accountability for a waste-free future.
+                </p>
+                <div class="social-row">
+                    <a href="https://www.instagram.com/kentii_88/"><img src="https://i.imgur.com/jDxVF6i.png" alt="Instagram"></a>
+                    <a href="https://www.facebook.com/kent.reyes.904339"><img src="https://i.imgur.com/KzCfWHk.png" alt="Facebook"></a>
+                    <a href="https://x.com/valerio183?s=21"><img src="https://i.imgur.com/xsraSaI.png" alt="X"></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <a href="index.html">HOME</a>
+                <a href="waste.html">WASTE</a>
+                <a href="index.html#community">COMMUNITY</a>
+            </div>
+            <div class="footer-col">
+                <h4>Location</h4>
+                <p>Barangay 7, Bliss<br>Cuenca Batangas</p>
+            </div>
+            <div class="footer-col">
+                <h4>Get in Touch</h4>
+                <a href="mailto:kentreyes208@gmail.com"><img src="https://i.imgur.com/6YEUGwy.png" alt="Email">
+                    kentreyes208@gmail.com</a>
+                <a href="tel:09369433099"><img src="https://i.imgur.com/VXfQoIg.png" alt="Phone"> 09369433099</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p class="footer-copy">ALL RIGHT RESERVED 2026</p>
+            <div class="footer-legal">
+                <a href="#">PRIVACY POLICY</a>
+                <a href="#">TERMS OF SERVICE</a>
+                <a href="#">WASTE REPORT</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        /* ══ HAMBURGER ══ */
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('nav-links');
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('open');
+            navLinks.classList.toggle('open');
+        });
+        navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+            hamburger.classList.remove('open');
+            navLinks.classList.remove('open');
+        }));
+         function initUserChip() {
+    // 1. Get the  JSON object 
+    var stored = sessionStorage.getItem('brgy7_user');
+
+    var name = 'Resident'; // default fallback
+
+    if (stored) {
+        try {
+            var user = JSON.parse(stored);
+            // 2. Extract just the first name (like "Kent Reyes" → "Kent")
+            if (user && user.name) {
+                name = user.name.split(' ')[0];
+            }
+        } catch (e) { /* ignore bad JSON */ }
+    }
+
+    // 3.  the chip
+    var avatar      = document.getElementById('user-avatar');
+    var nameDisplay = document.getElementById('user-name-display');
+
+    if (nameDisplay) nameDisplay.textContent = name;
+    if (avatar)      avatar.textContent = name.charAt(0).toUpperCase();
+}
+
+// Call it on page load
+initUserChip();
+
+        /* ══ SCROLL REVEAL ══ */
+        const fadeEls = document.querySelectorAll('.fade-up');
+        const revObs = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+        }, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' });
+        fadeEls.forEach(el => revObs.observe(el));
+
+        /* ══ TRUCK WAYPOINTS (Barangay 7 Bliss, Cuenca, Batangas) ══
+           Real approximate coordinates tracing through the Bliss community streets.
+           Start: Barangay 7 Hall area → Rizal St → Don Juan St → Kaisahanan → Romula → Pagsanha → Hanala
+        */
+        const WAYPOINTS = [
+            // Barangay Hall
+            { lat: 13.9213, lng: 121.0082, label: "Barangay 7 Hall", street: -1, pause: 3000 },
+            { lat: 13.9218, lng: 121.0079, label: "Rizal Street", street: 0 },
+            { lat: 13.9225, lng: 121.0074, label: "Rizal Street", street: 0 },
+            { lat: 13.9231, lng: 121.0070, label: "Rizal Street", street: 0 },
+            { lat: 13.9237, lng: 121.0075, label: "Don Juan Street", street: 1 },
+            { lat: 13.9243, lng: 121.0081, label: "Don Juan Street", street: 1 },
+            { lat: 13.9248, lng: 121.0087, label: "Kaisahanan Street", street: 2 },
+            { lat: 13.9243, lng: 121.0093, label: "Kaisahanan Street", street: 2 },
+            { lat: 13.9238, lng: 121.0099, label: "Romula Street", street: 3 },
+            { lat: 13.9232, lng: 121.0105, label: "Romula Street", street: 3 },
+            { lat: 13.9226, lng: 121.0099, label: "Pagsanha Street", street: 4 },
+            { lat: 13.9220, lng: 121.0093, label: "Pagsanha Street", street: 4 },
+            { lat: 13.9215, lng: 121.0087, label: "Hanala Street", street: 5 },
+            { lat: 13.9210, lng: 121.0083, label: "Hanala Street — Complete", street: 5 }
+        ];
+
+        const STREET_NAMES = ["Rizal Street", "Don Juan Street", "Kaisahanan Street", "Romula Street", "Pagsanha Street", "Hanala Street"];
+        const TOTAL_PTS = WAYPOINTS.length;
+
+        let map, truckMarker, routePolyline, trailPolyline;
+        let truckPosition = 0;
+        let animRunning = false;
+        let trailCoords = [];
+
+        /* ── Open tracker ── */
+        document.getElementById('open-tracker-btn').addEventListener('click', () => {
+            document.getElementById('idle-view').style.display = 'none';
+            const lt = document.getElementById('live-tracker');
+            lt.style.display = 'flex';
+            lt.style.flexDirection = 'column';
+            lt.style.gap = '12px';
+            initMap();
+        });
+
+        function initMap() {
+            if (map) return;
+            map = L.map('map', {
+                center: [WAYPOINTS[0].lat, WAYPOINTS[0].lng],
+                zoom: 16,
+                zoomControl: true,
+                scrollWheelZoom: true
+            });
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+                maxZoom: 19
+            }).addTo(map);
+
+            // Full route polyline (ghost)
+            const allCoords = WAYPOINTS.map(w => [w.lat, w.lng]);
+            routePolyline = L.polyline(allCoords, {
+                color: 'rgba(90,122,64,0.3)',
+                weight: 5,
+                dashArray: '8 6'
+            }).addTo(map);
+
+            // Trail polyline (progress)
+            trailPolyline = L.polyline([], {
+                color: '#8ab55a',
+                weight: 5,
+                lineCap: 'round'
+            }).addTo(map);
+
+            // Start marker (hall)
+            L.marker([WAYPOINTS[0].lat, WAYPOINTS[0].lng], {
+                icon: L.divIcon({
+                    className: '',
+                    html: '<div style="background:#3d4f2e;border:2px solid #b5d68a;border-radius:8px;padding:4px 8px;color:#fff;font-size:10px;font-weight:700;white-space:nowrap;font-family:Poppins,sans-serif;">🏛 Barangay Hall</div>',
+                    iconAnchor: [0, 0]
+                })
+            }).addTo(map);
+
+            // End marker
+            L.marker([WAYPOINTS[TOTAL_PTS - 1].lat, WAYPOINTS[TOTAL_PTS - 1].lng], {
+                icon: L.divIcon({
+                    className: '',
+                    html: '<div style="background:#5a7a40;border:2px solid #b5d68a;border-radius:8px;padding:4px 8px;color:#fff;font-size:10px;font-weight:700;white-space:nowrap;font-family:Poppins,sans-serif;">✅ End Point</div>',
+                    iconAnchor: [0, 0]
+                })
+            }).addTo(map);
+
+            // Truck marker
+            truckMarker = L.marker([WAYPOINTS[0].lat, WAYPOINTS[0].lng], {
+                icon: L.divIcon({
+                    className: 'truck-marker-icon',
+                    html: '🚛',
+                    iconSize: [36, 36],
+                    iconAnchor: [18, 18]
+                }),
+                zIndexOffset: 1000
+            }).addTo(map);
+
+            updateUI(0);
+
+            document.getElementById('start-btn').addEventListener('click', startSimulation);
+        }
+
+
+        function updateUI(idx) {
+            const wp = WAYPOINTS[idx];
+            const pct = Math.round((idx / (TOTAL_PTS - 1)) * 100);
+
+            // Status
+            document.getElementById('status-text').textContent = 'Current Stop: ' + wp.label;
+            document.getElementById('dist-text').textContent = (TOTAL_PTS - 1 - idx) + ' stops';
+
+            const etaSec = (TOTAL_PTS - 1 - idx) * 2;
+            document.getElementById('eta-text').textContent = etaSec > 0 ? etaSec + 's' : 'Arrived!';
+
+            // Progress bar
+            document.getElementById('dist-fill').style.width = pct + '%';
+            document.getElementById('dist-pct').textContent = pct + '%';
+
+            // Step indicators
+            const phase = idx === 0 ? 0 : (idx === TOTAL_PTS - 1 ? 2 : 1);
+            ['ps-0', 'ps-1', 'ps-2'].forEach((id, i) => {
+                const el = document.getElementById(id);
+                el.classList.remove('active', 'done');
+                if (i < phase) el.classList.add('done');
+                else if (i === phase) el.classList.add('active');
+            });
+            ['pl-0', 'pl-1'].forEach((id, i) => {
+                const el = document.getElementById(id);
+                el.classList.toggle('done', i < phase);
+            });
+
+            // Street list highlights
+            const curStreet = wp.street;
+            STREET_NAMES.forEach((_, si) => {
+                const el = document.getElementById('rs-' + si);
+                el.classList.remove('street-done', 'street-active');
+                if (si < curStreet) el.classList.add('street-done');
+                else if (si === curStreet) el.classList.add('street-active');
+            });
+
+            // Route nodes
+            document.getElementById('rn-hall').classList.toggle('done-node', idx > 0);
+            document.getElementById('rn-streets').classList.toggle('active-node', idx > 0 && idx < TOTAL_PTS - 1);
+            document.getElementById('rn-done').classList.toggle('active-node', idx === TOTAL_PTS - 1);
+        }
+
+        function getBearing(from, to) {
+            const dLng = (to.lng - from.lng) * Math.PI / 180;
+            const lat1 = from.lat * Math.PI / 180;
+            const lat2 = to.lat * Math.PI / 180;
+            const y = Math.sin(dLng) * Math.cos(lat2);
+            const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLng);
+            return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+        }
+
+        function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+        async function startSimulation() {
+            if (animRunning) return;
+            animRunning = true;
+            truckPosition = 0;
+            trailCoords = [];
+            trailPolyline.setLatLngs([]);
+
+            const btn = document.getElementById('start-btn');
+            btn.disabled = true;
+            btn.textContent = '🚛 Truck is moving...';
+
+            // Reset truck to start
+            truckMarker.setLatLng([WAYPOINTS[0].lat, WAYPOINTS[0].lng]);
+            map.flyTo([WAYPOINTS[0].lat, WAYPOINTS[0].lng], 16, { duration: 1 });
+
+            // Pause at hall (simulating pickup)
+            document.getElementById('status-text').textContent = '⏳ Loading waste at Barangay Hall...';
+            document.getElementById('status-dot').style.background = '#f0a030';
+            await sleep(3000);
+            document.getElementById('status-dot').style.background = 'var(--light-green)';
+
+            for (let i = 1; i < TOTAL_PTS; i++) {
+                const from = WAYPOINTS[i - 1];
+                const to = WAYPOINTS[i];
+
+                // Smooth interpolation between waypoints
+                const steps = 30;
+                for (let s = 1; s <= steps; s++) {
+                    const t = s / steps;
+                    const ease = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t; // ease in-out
+                    const lat = from.lat + (to.lat - from.lat) * ease;
+                    const lng = from.lng + (to.lng - from.lng) * ease;
+                    truckMarker.setLatLng([lat, lng]);
+                    trailCoords.push([lat, lng]);
+                    trailPolyline.setLatLngs(trailCoords);
+                    if (s % 10 === 0) map.panTo([lat, lng], { animate: true, duration: .4 });
+                    await sleep(60);
+                }
+
+                truckPosition = i;
+                updateUI(i);
+
+                // Short pause at each waypoint
+                await sleep(400);
+            }
+
+            // Complete
+            document.getElementById('status-text').textContent = '✅ Route Complete! All streets served.';
+            document.getElementById('eta-text').textContent = 'Done';
+            document.getElementById('status-dot').style.background = '#8ab55a';
+            btn.textContent = '↺ Restart';
+            btn.disabled = false;
+            animRunning = false;
+            btn.onclick = () => {
+                truckPosition = 0;
+                trailCoords = [];
+                trailPolyline.setLatLngs([]);
+                truckMarker.setLatLng([WAYPOINTS[0].lat, WAYPOINTS[0].lng]);
+                updateUI(0);
+                document.getElementById('status-dot').style.background = 'var(--light-green)';
+                btn.textContent = '▶ Start Tracking';
+                btn.onclick = startSimulation;
+                animRunning = false;
+            };
+        }
+    </script>
+</body>
+
+</html>

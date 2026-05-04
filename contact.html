@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact – Community Waste Management & Reporting System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
+  <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+  <style>
+    :root {
+      --dark-green: #4b5d3b;
+      --mid-green: #5a7a40;
+      --light-green: #a4d07d;
+      --pale-green: #b5d68a;
+      --cream: #e9e5d3;
+      --cream-dark: #d9d4b8;
+      --text-dark: #2c3a1e;
+      --text-mid: #4a5e35;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--cream);
+      color: var(--text-dark);
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ══ NAV ══ */
+    nav {
+      background: var(--dark-green);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 6%;
+      height: 64px;
+      position: sticky;
+      top: 0;
+      z-index: 2000;
+      flex-shrink: 0;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo img {
+      height: 40px;
+      display: block;
+    }
+
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+
+    .logo-text strong {
+      color: #fff;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .01em;
+    }
+
+    .logo-text span {
+      color: var(--pale-green);
+      font-size: .58rem;
+    }
+
+   nav {
+      background: var(--dark-green);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 6%;
+      height: 64px;
+      position: sticky;
+      top: 0;
+      z-index: 2000;
+      flex-shrink: 0;
+    }
+
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo img { height: 40px; display: block; }
+    .logo-text { display: flex; flex-direction: column; line-height: 1.2; }
+    .logo-text strong { color: #fff; font-size: .68rem; font-weight: 700; letter-spacing: .01em; }
+    .logo-text span { color: var(--pale-green); font-size: .58rem; }
+
+    .nav-links { display: flex; list-style: none; gap: 20px; align-items: center; }
+    .nav-links a {
+      text-decoration: none; color: var(--pale-green); font-weight: 700;
+      font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; transition: color .2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: #fff; }
+    .nav-links .report-btn {
+      background: var(--cream); color: var(--dark-green) !important;
+      padding: 7px 18px; border-radius: 6px; font-weight: 800; border: 2px solid var(--cream);
+    }
+    .nav-links .report-btn:hover { background: var(--pale-green); border-color: var(--pale-green); }
+
+    /* Logged-in user chip */
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 50px;
+      padding: 5px 14px 5px 8px;
+    }
+    .user-chip-avatar {
+      width: 28px; height: 28px;
+      background: var(--light-green);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .75rem; font-weight: 800; color: var(--dark-green);
+    }
+    .user-chip span { font-size: .72rem; font-weight: 600; color: #fff; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .logout-btn {
+      background: none; border: none; color: rgba(255,255,255,.5);
+      cursor: pointer; font-size: .75rem; margin-left: 4px; transition: color .2s;
+    }
+    .logout-btn:hover { color: #fff; }
+
+
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2.5px;
+      background: #fff;
+      border-radius: 2px;
+      transition: .3s;
+    }
+
+    .hamburger.open span:nth-child(1) {
+      transform: translateY(7.5px) rotate(45deg);
+    }
+
+    .hamburger.open span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.open span:nth-child(3) {
+      transform: translateY(-7.5px) rotate(-45deg);
+    }
+
+    /* ══ MAIN ══ */
+    main {
+      flex: 1;
+      padding: 64px 8% 80px;
+    }
+
+    /* ══ PAGE HEADER ══ */
+    .page-header {
+      text-align: center;
+      margin-bottom: 52px;
+    }
+
+    .page-header h1 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      font-style: italic;
+      color: var(--text-dark);
+      margin-bottom: 14px;
+    }
+
+    .page-header p {
+      font-size: .95rem;
+      color: var(--text-mid);
+      max-width: 520px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* ══ FORM CARD ══ */
+    .form-wrap {
+      max-width: 520px;
+      margin: 0 auto 64px;
+    }
+
+    .form-card {
+      background: var(--dark-green);
+      border-radius: 28px;
+      padding: 44px 40px 40px;
+      box-shadow: 0 16px 48px rgba(40, 60, 20, .18);
+    }
+
+    .form-card h2 {
+      text-align: center;
+      color: #fff;
+      font-size: 1.6rem;
+      font-weight: 800;
+      font-style: italic;
+      margin-bottom: 30px;
+      letter-spacing: .01em;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      background: rgba(255, 255, 255, .92);
+      border: none;
+      border-radius: 14px;
+      padding: 16px 20px;
+      font-family: 'Poppins', sans-serif;
+      font-size: .88rem;
+      color: var(--text-dark);
+      outline: none;
+      transition: box-shadow .2s, background .2s;
+      resize: none;
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: #8a9a7a;
+      font-size: .86rem;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(164, 208, 125, .5);
+    }
+
+    .form-group textarea {
+      min-height: 160px;
+    }
+
+    .send-btn {
+      display: block;
+      width: 100%;
+      margin-top: 8px;
+      padding: 15px;
+      background: var(--cream);
+      color: var(--dark-green);
+      border: none;
+      border-radius: 14px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: .92rem;
+      letter-spacing: .04em;
+      cursor: pointer;
+      transition: background .25s, transform .2s, box-shadow .2s;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, .12);
+    }
+
+    .send-btn:hover {
+      background: var(--pale-green);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .14);
+    }
+
+    .send-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Success message */
+    #success-msg {
+      display: none;
+      margin-top: 20px;
+      background: rgba(164, 208, 125, .25);
+      border: 1.5px solid var(--light-green);
+      border-radius: 12px;
+      padding: 14px 20px;
+      text-align: center;
+      color: var(--pale-green);
+      font-weight: 600;
+      font-size: .88rem;
+      animation: fadeIn .4s ease;
+    }
+
+    #success-msg i {
+      margin-right: 8px;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ══ SOCIAL ICONS ══ */
+    .social-section {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+      margin: 0 auto 80px;
+      max-width: 640px;
+    }
+
+    .social-icon-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 96px;
+      height: 96px;
+      border-radius: 22px;
+      background: var(--dark-green);
+      overflow: hidden;
+      transition: transform .25s, box-shadow .25s;
+      box-shadow: 0 6px 20px rgba(40, 60, 20, .15);
+    }
+
+    .social-icon-link:hover {
+      transform: translateY(-5px) scale(1.06);
+      box-shadow: 0 14px 36px rgba(40, 60, 20, .22);
+    }
+
+    .social-icon-link img {
+      width: 56px;
+      height: 56px;
+      object-fit: contain;
+      filter: brightness(0) invert(1);
+    }
+
+    /* ══ FADE UP ══ */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ══ FOOTER ══ */
+    footer {
+      background: var(--dark-green);
+      color: #fff;
+      padding: 60px 8% 0;
+      flex-shrink: 0;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1.6fr;
+      gap: 40px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid rgba(255, 255, 255, .1);
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .footer-brand img {
+      height: 46px;
+      flex-shrink: 0;
+    }
+
+    .footer-brand-text strong {
+      font-size: .75rem;
+      display: block;
+      color: #fff;
+      line-height: 1.45;
+      font-weight: 700;
+    }
+
+    .footer-tagline {
+      font-size: .77rem;
+      opacity: .6;
+      line-height: 1.7;
+      margin-bottom: 18px;
+    }
+
+    .social-row {
+      display: flex;
+      gap: 14px;
+    }
+
+    .social-row a img {
+      width: 26px;
+      height: 26px;
+      filter: brightness(0) invert(1);
+      opacity: .75;
+      transition: .2s;
+      display: block;
+    }
+
+    .social-row a img:hover {
+      opacity: 1;
+    }
+
+    .footer-col h4 {
+      font-size: .8rem;
+      font-weight: 700;
+      color: var(--pale-green);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .footer-col p,
+    .footer-col a {
+      font-size: .82rem;
+      color: rgba(255, 255, 255, .7);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      transition: .2s;
+      line-height: 1.5;
+    }
+
+    .footer-col a:hover {
+      color: #fff;
+    }
+
+    .footer-col img {
+      width: 18px;
+      filter: brightness(0) invert(1);
+      opacity: .7;
+      flex-shrink: 0;
+    }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 0;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .footer-copy {
+      font-size: .72rem;
+      opacity: .4;
+    }
+
+    .footer-legal {
+      display: flex;
+      gap: 20px;
+    }
+
+    .footer-legal a {
+      font-size: .72rem;
+      opacity: .4;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .footer-legal a:hover {
+      opacity: .8;
+    }
+
+    /* ══ RESPONSIVE ══ */
+    @media(max-width:900px) {
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media(max-width:768px) {
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 64px;
+        left: 0;
+        right: 0;
+        background: var(--dark-green);
+        padding: 16px 6%;
+        gap: 4px;
+        border-top: 1px solid rgba(255, 255, 255, .1);
+      }
+
+      .nav-links.open {
+        display: flex;
+      }
+
+      .nav-links li {
+        width: 100%;
+      }
+
+      .nav-links a {
+        padding: 10px 0;
+        display: block;
+        border-bottom: 1px solid rgba(255, 255, 255, .06);
+      }
+
+      .nav-links .report-btn {
+        margin-top: 8px;
+        text-align: center;
+        border-radius: 8px;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .social-section {
+        gap: 22px;
+      }
+
+      .social-icon-link {
+        width: 80px;
+        height: 80px;
+      }
+
+      .social-icon-link img {
+        width: 46px;
+        height: 46px;
+      }
+
+      main {
+        padding: 48px 5% 60px;
+      }
+
+      .form-card {
+        padding: 32px 24px 30px;
+      }
+    }
+
+    @media(max-width:480px) {
+      nav {
+        padding: 0 5%;
+      }
+
+      .logo-text {
+        display: none;
+      }
+
+      .social-section {
+        gap: 16px;
+      }
+
+      .social-icon-link {
+        width: 72px;
+        height: 72px;
+        border-radius: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ══ NAV ══ -->
+   <nav>
+      <div class="logo">
+        <img src="https://i.imgur.com/h9fxKYo.png" alt="Logo">
+        <div class="logo-text">
+          <strong>The Community Waste Management and Reporting System</strong>
+          <span>For Greener Future</span>
+        </div>
+      </div>
+      <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="index.html" class="active">HOME</a></li>
+        <li><a href="about.html">ABOUT</a></li>
+        <li><a href="waste.html">WASTE</a></li>
+        <li><a href="community.html">COMMUNITY</a></li>
+        <li><a href="contact.html">CONTACT</a></li>
+        <li><a href="report.html" class="report-btn">REPORT</a></li>
+        <li>
+          <div class="user-chip" id="user-chip">
+            <div class="user-chip-avatar" id="user-avatar">?</div>
+            <span id="user-name-display">Resident</span>
+            <button class="logout-btn" onclick="handleLogout()" title="Log out">
+              <i class="fas fa-sign-out-alt"></i>
+            </button>
+          </div>
+        </li>
+      </ul>
+    </nav>
+
+  <!-- ══ MAIN ══ -->
+  <main>
+
+    <!-- Header -->
+    <div class="page-header">
+      <h1 class="fade-up">Contact Us</h1>
+      <p class="fade-up" style="transition-delay:.08s">We'd love to hear from you. Send us a message or follow our
+        journey online.</p>
+    </div>
+
+    <!-- Form -->
+<div class="form-wrap fade-up" style="transition-delay:.14s">
+  <div class="form-card">
+    <h2>Get in Touch</h2>
+
+  
+    <form id="contact-form" action="https://formspree.io/f/xkoyjgep" method="POST">
+      <div class="form-group">
+        <input type="text" name="name" id="field-name" placeholder="Name" required autocomplete="name">
+      </div>
+      <div class="form-group">
+        <input type="email" name="email" id="field-email" placeholder="Email" required autocomplete="email">
+      </div>
+      <div class="form-group">
+        <textarea name="message" id="field-message" placeholder="Your Message" required></textarea>
+      </div>
+      
+     
+      <button type="submit" class="send-btn" id="send-btn">Send Message</button>
+      
+      <div id="success-msg">
+        <i class="fas fa-circle-check"></i>Message Sent Successfully! We'll get back to you soon.
+      </div>
+    </form>
+  </div>
+</div>
+
+    <!-- Social Icons -->
+    <div class="social-section fade-up" style="transition-delay:.2s">
+      <a href="https://www.instagram.com/kentii_88/" target="_blank" rel="noopener" class="social-icon-link">
+        <img src="https://i.imgur.com/jDxVF6i.png" alt="Instagram">
+      </a>
+      <a href="https://www.facebook.com/kent.reyes.904339" target="_blank" rel="noopener" class="social-icon-link">
+        <img src="https://i.imgur.com/KzCfWHk.png" alt="Facebook">
+      </a>
+      <a href="https://x.com/valerio183?s=21" target="_blank" rel="noopener" class="social-icon-link">
+        <img src="https://i.imgur.com/xsraSaI.png" alt="X">
+      </a>
+    </div>
+
+  </main>
+
+  <!-- ══ FOOTER ══ -->
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">
+          <img src="https://i.imgur.com/h9fxKYo.png" alt="Logo">
+          <div class="footer-brand-text">
+            <strong>Community Waste<br>Management &<br>Reporting System</strong>
+          </div>
+        </div>
+        <p class="footer-tagline">Cleaning our community through transparency, awareness, and verified action. Every
+          report is backed by legitimate data to ensure total accountability for a waste-free future.</p>
+        <div class="social-row">
+          <a href="https://www.instagram.com/kentii_88/"><img src="https://i.imgur.com/jDxVF6i.png" alt="Instagram"></a>
+          <a href="https://www.facebook.com/kent.reyes.904339"><img src="https://i.imgur.com/KzCfWHk.png" alt="Facebook"></a>
+          <a href="https://x.com/valerio183?s=21"><img src="https://i.imgur.com/xsraSaI.png" alt="X"></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <a href="index.html">HOME</a>
+        <a href="waste.html">WASTE</a>
+        <a href="community.html">COMMUNITY</a>
+      </div>
+      <div class="footer-col">
+        <h4>Location</h4>
+        <p>Barangay 7, Bliss<br>Cuenca Batangas</p>
+      </div>
+      <div class="footer-col">
+        <h4>Get in Touch</h4>
+        <a href="mailto:kentreyes208@gmail.com">
+          <img src="https://i.imgur.com/6YEUGwy.png" alt="Email"> kentreyes208@gmail.com
+        </a>
+        <a href="tel:09369433099">
+          <img src="https://i.imgur.com/VXfQoIg.png" alt="Phone"> 09369433099
+        </a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">ALL RIGHT RESERVED 2026</p>
+      <div class="footer-legal">
+        <a href="#">PRIVACY POLICY</a>
+        <a href="#">TERMS OF SERVICE</a>
+        <a href="#">WASTE REPORT</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ══ PYSCRIPT ══ -->
+  <script type="py">
+from pyscript import document
+from pyodide.ffi import create_proxy
+import asyncio
+
+async def submit_form(event):
+    name_el    = document.getElementById("field-name")
+    email_el   = document.getElementById("field-email")
+    message_el = document.getElementById("field-message")
+    success_el = document.getElementById("success-msg")
+    send_btn   = document.getElementById("send-btn")
+
+    name    = name_el.value.strip()
+    email   = email_el.value.strip()
+    message = message_el.value.strip()
+
+    # Basic validation
+    if not name or not email or not message:
+        return
+
+    # Visual loading state
+    send_btn.textContent = "Sending…"
+    send_btn.disabled = True
+
+    # Simulate a short async network delay (Formspree handles the real POST)
+    await asyncio.sleep(0.8)
+
+    # Submit the form to Formspree via native JS form submit
+    form = document.getElementById("contact-form")
+
+    # Check if Formspree ID is set; if not, just show success UI
+    action = form.getAttribute("action")
+    if "YOUR_FORM_ID" not in action:
+        form.submit()
+    
+    # Clear fields and show success
+    name_el.value    = ""
+    email_el.value   = ""
+    message_el.value = ""
+    success_el.style.display = "block"
+    send_btn.textContent = "Send Message"
+    send_btn.disabled = False
+
+    # Auto-hide success message after 5 seconds
+    await asyncio.sleep(5)
+    success_el.style.display = "none"
+
+# Attach click handler
+btn = document.getElementById("send-btn")
+btn.addEventListener("click", create_proxy(lambda e: asyncio.ensure_future(submit_form(e))))
+</script>
+
+  <script>
+    /* ══ HAMBURGER ══ */
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('nav-links');
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('open');
+      navLinks.classList.toggle('open');
+    });
+    navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      hamburger.classList.remove('open');
+      navLinks.classList.remove('open');
+    }
+    ));
+     function initUserChip() {
+    // 1. Get the  JSON object using the correct key
+    var stored = sessionStorage.getItem('brgy7_user');
+
+    var name = 'Resident'; // default fallback
+
+    if (stored) {
+        try {
+            var user = JSON.parse(stored);
+            // 2. Extract just the first name (like "Kent Reyes" → "Kent")
+            if (user && user.name) {
+                name = user.name.split(' ')[0];
+            }
+        } catch (e) { /* ignore bad JSON */ }
+    }
+
+    // 3.  the chip
+    var avatar      = document.getElementById('user-avatar');
+    var nameDisplay = document.getElementById('user-name-display');
+
+    if (nameDisplay) nameDisplay.textContent = name;
+    if (avatar)      avatar.textContent = name.charAt(0).toUpperCase();
+}
+
+// Call it on page load
+initUserChip();
+    /* ══ SCROLL REVEAL ══ */
+    const revEls = document.querySelectorAll('.fade-up');
+    const revObs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1, rootMargin: '0px 0px -20px 0px' });
+    revEls.forEach(el => revObs.observe(el));
+  </script>
+</body>
+
+</html>
