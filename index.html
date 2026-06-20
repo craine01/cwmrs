@@ -73,16 +73,16 @@
     }
 
     .auth-box {
-      position: relative;
-      z-index: 2;
-      width: 100%;
+      position: relative;    /* ginagamit para ma adjust sa parents */
+      z-index: 2;           /* para siguradong nasa ibabaw siya ng ibang elements */
+      width: 100%;         /* lalaki siya ng hanggang 100 percent pero hindi lalagpas ng 440 maxwidth*/
       max-width: 440px;
-      margin: 20px;
-      background: rgba(232, 228, 207, 0.96);
-      border-radius: 28px;
-      padding: 44px 40px;
-      box-shadow: 0 32px 80px rgba(20,30,10,.45), 0 0 0 1px rgba(255,255,255,.3);
-      backdrop-filter: blur(12px);
+      margin: 20px;          /* sa bawat corner ng box, sure na 20px ang margin nito, maari rin naman na baguhin ang margin to margin-top or margin-bottom, right or left */
+      background: rgba(232, 228, 207, 0.96);  /* ang kulay ng background nito ay medyo transparent */
+      border-radius: 28px;                 /* ang boarder-radius ay paraan para mapabilog ang isang corner */
+      padding: 44px 40px;                  /* basta ito ung space between the content and the box para hindi super gilid yk */
+      box-shadow: 0 32px 80px rgba(20,30,10,.45), 0 0 0 1px rgba(255,255,255,.3);  /* naglalagay tayo ng shadow para magmukhang uma-umangat ung box */
+      backdrop-filter: blur(12px);                                                  /* binabago ng backdrop ang itsura ng background para mag blur at pwede rin sa iba pan tulad ng brightness etc.*/
       animation: authSlideIn .7s cubic-bezier(.34,1.56,.64,1) both;
     }
 
