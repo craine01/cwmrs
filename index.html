@@ -51,9 +51,9 @@
       position: absolute; /*   Takes the dust layer out of the normal document flow so it can sit directly on top of (or behind) the content.   */
       inset: 0; /*   forces this dust layer to stretch and perfectly cover 100% of its parent element.    */
       background-image:
-        radial-gradient(circle at 20% 30%, rgba(181,214,138,.12) 0%, transparent 50%), /*   Target an element with the ID of auth-overlay, ::before: This keeps your markup clean.    */
-        radial-gradient(circle at 80% 70%, rgba(138,181,90,.10) 0%, transparent 50%), /*   Target an element with the ID of auth-overlay, ::before: This keeps your markup clean.    */
-        radial-gradient(circle at 50% 10%, rgba(232,228,207,.06) 0%, transparent 40%); /*   Target an element with the ID of auth-overlay, ::before: This keeps your markup clean.    */
+        radial-gradient(circle at 20% 30%, rgba(181,214,138,.12) 0%, transparent 50%), /*   Places the center of the glow near the top-left. */
+        radial-gradient(circle at 80% 70%, rgba(138,181,90,.10) 0%, transparent 50%), /*   Places this glow toward the bottom-right.    */
+        radial-gradient(circle at 50% 10%, rgba(232,228,207,.06) 0%, transparent 40%); /*  Places this right at the top-center, acting like a gentle overhead sunbeam.  */
       pointer-events: none;
     }
 
